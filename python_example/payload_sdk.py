@@ -65,7 +65,7 @@ PAYLOAD_PARAM_EXT_ACK = 10
 class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
         # Load thư viện động
-        self.lib = ctypes.CDLL("./build/libs/libPayloadSDK.so")  # Thay đường dẫn nếu cần
+        self.lib = ctypes.CDLL("./PayloadSdk/build/libs/libPayloadSDK.so")  # Thay đường dẫn nếu cần
         
         # Khởi tạo các hàm từ wrapper
         self._setup_function_prototypes()
