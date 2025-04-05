@@ -41,6 +41,7 @@ class MavlinkMessageT(ctypes.Structure):
         ("signature", ctypes.c_uint8 * 13),
     ]
 
+# Mavlink global position structures
 class MavlinkGlobalPositionInt(ctypes.Structure):
     _fields_ = [
         ("time_boot_ms", ctypes.c_uint32), 
@@ -54,6 +55,7 @@ class MavlinkGlobalPositionInt(ctypes.Structure):
         ("hdg", ctypes.c_uint16),     
     ]   
 
+# Mavlink system time structures
 class MavlinkSystemTime(ctypes.Structure):
     _fields_ = [
         ("time_unix_usec", ctypes.c_uint64),  
@@ -155,6 +157,11 @@ class PayloadSdkInterface:
 
     def _setup_function_prototypes(self):
 
+        # Callback registration
+        self.lib.PayloadSdkInterface_regPayloadParamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_PARAM_CALLBACK_T]
+        self.lib.PayloadSdkInterface_regPayloadStatusChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STATUS_CALLBACK_T]
+        self.lib.PayloadSdkInterface_regPayloadStreamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STREAMINFO_CALLBACK_T]
+
         # Core functions
         self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
         self.lib.PayloadSdkInterface_new.restype = ctypes.c_void_p
@@ -165,11 +172,6 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_sdkInitConnection.restype = ctypes.c_int
         self.lib.PayloadSdkInterface_sdkQuit.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_checkPayloadConnection.argtypes = [ctypes.c_void_p]
-
-        # Callback registration
-        self.lib.PayloadSdkInterface_regPayloadParamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_PARAM_CALLBACK_T]
-        self.lib.PayloadSdkInterface_regPayloadStatusChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STATUS_CALLBACK_T]
-        self.lib.PayloadSdkInterface_regPayloadStreamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STREAMINFO_CALLBACK_T]
 
         # Camera functions
         self.lib.PayloadSdkInterface_setPayloadCameraParam.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_uint32, ctypes.c_uint8]
@@ -186,24 +188,27 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_setPayloadCameraStopImage.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_setPayloadCameraRecordVideoStart.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_setPayloadCameraRecordVideoStop.argtypes = [ctypes.c_void_p]
+        self.lib.PayloadSdkInterface_setParamRate.argtypes = [ctypes.c_void_p, ctypes.c_uint8, ctypes.c_uint16]
         self.lib.PayloadSdkInterface_setCameraZoom.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float]
         self.lib.PayloadSdkInterface_setCameraFocus.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float]
-        self.lib.PayloadSdkInterface_setParamRate.argtypes = [ctypes.c_void_p, ctypes.c_uint8, ctypes.c_uint16]
-
 
         # Gimbal functions
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PayloadSdkInterface_setPayloadGimbalParamByID.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_float]
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingList.argtypes = [ctypes.c_void_p]
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByIndex.argtypes = [ctypes.c_void_p, ctypes.c_uint8]
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibGyro.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibAccel.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibMotor.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_sendPayloadGimbalSearchHome.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_sendPayloadGimbalAutoTune.argtypes = [ctypes.c_void_p, ctypes.c_bool]
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingList.argtypes = [ctypes.c_void_p]
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByIndex.argtypes = [ctypes.c_void_p, ctypes.c_uint8]
         self.lib.PayloadSdkInterface_setGimbalSpeed.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_uint8]
+        
+        # FFC functions
         self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_setPayloadCameraFFCMode.argtypes = [ctypes.c_void_p]
+
+        # GPS and system time functions
         self.lib.PayloadSdkInterface_sendPayloadGPSPosition.argtypes = [ctypes.c_void_p, MavlinkGlobalPositionInt]
         self.lib.PayloadSdkInterface_sendPayloadSystemTime.argtypes = [ctypes.c_void_p, MavlinkSystemTime]
         
@@ -214,6 +219,23 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_getNewMessage.argtypes = [ctypes.c_void_p, ctypes.POINTER(MavlinkMessageT)]
         self.lib.PayloadSdkInterface_getNewMessage.restype = ctypes.c_uint8
 
+    
+    # Callback methods
+    def regPayloadParamChanged(self, callback: Callable[[int, str, list], None]):
+        self._param_callback = PAYLOAD_PARAM_CALLBACK_T(lambda event, param_char, param_double: 
+            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(2)]))
+        self.lib.PayloadSdkInterface_regPayloadParamChanged(self.obj, self._param_callback)
+
+    def regPayloadStatusChanged(self, callback: Callable[[int, list], None]):
+        self._status_callback = PAYLOAD_STATUS_CALLBACK_T(lambda event, param: 
+            callback(event, [param[i] for i in range(3)])) 
+        self.lib.PayloadSdkInterface_regPayloadStatusChanged(self.obj, self._status_callback)
+
+    def regPayloadStreamChanged(self, callback: Callable[[int, str, list], None]):
+        self._stream_callback = PAYLOAD_STREAMINFO_CALLBACK_T(lambda event, param_char, param_double: 
+            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(3)]))
+        self.lib.PayloadSdkInterface_regPayloadStreamChanged(self.obj, self._stream_callback)
+
     # Core methods
     def sdkInitConnection(self):
         return self.lib.PayloadSdkInterface_sdkInitConnection(self.obj)
@@ -223,28 +245,6 @@ class PayloadSdkInterface:
 
     def checkPayloadConnection(self):
         self.lib.PayloadSdkInterface_checkPayloadConnection(self.obj)
-
-    # Callback methods
-    def regPayloadParamChanged(self, callback: Callable[[int, str, list], None]):
-        self._param_callback = PAYLOAD_PARAM_CALLBACK_T(lambda event, param_char, param_double: 
-            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(2)]))
-        self.lib.PayloadSdkInterface_regPayloadParamChanged(self.obj, self._param_callback)
-
-    # def regPayloadStatusChanged(self, callback: Callable[[int, list], None]):
-    #     self._status_callback = PAYLOAD_STATUS_CALLBACK_T(lambda event, param: 
-    #         callback(event, [param[i] for i in range(ctypes.cast(param, ctypes.POINTER(ctypes.c_double * 10)).contents._length_)]))
-    #     self.lib.PayloadSdkInterface_regPayloadStatusChanged(self.obj, self._status_callback)
-
-    def regPayloadStatusChanged(self, callback: Callable[[int, list], None]):
-        # Sửa lại để đảm bảo callback không bị garbage collected và nhận đúng số tham số
-        self._status_callback = PAYLOAD_STATUS_CALLBACK_T(lambda event, param: 
-            callback(event, [param[i] for i in range(3)]))  # Chỉ lấy 3 phần tử: cmd_id, result, progress
-        self.lib.PayloadSdkInterface_regPayloadStatusChanged(self.obj, self._status_callback)
-
-    def regPayloadStreamChanged(self, callback: Callable[[int, str, list], None]):
-        self._stream_callback = PAYLOAD_STREAMINFO_CALLBACK_T(lambda event, param_char, param_double: 
-            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(3)]))
-        self.lib.PayloadSdkInterface_regPayloadStreamChanged(self.obj, self._stream_callback)
 
     # Camera methods
     def setPayloadCameraParam(self, param_id: str, param_value: int, param_type: int):
@@ -289,27 +289,18 @@ class PayloadSdkInterface:
     def setPayloadCameraRecordVideoStop(self):
         self.lib.PayloadSdkInterface_setPayloadCameraRecordVideoStop(self.obj)
 
+    def setParamRate(self, pIndex: int, time_ms: int):
+        self.lib.PayloadSdkInterface_setParamRate(self.obj, pIndex, time_ms)
+
     def setCameraZoom(self, zoom_type: float, zoom_value: float):
         self.lib.PayloadSdkInterface_setCameraZoom(self.obj, zoom_type, zoom_value)
 
     def setCameraFocus(self, focus_type: float, focus_value: float = 0):
         self.lib.PayloadSdkInterface_setCameraFocus(self.obj, focus_type, focus_value)
 
-    def setParamRate(self, pIndex: int, time_ms: int):
-        self.lib.PayloadSdkInterface_setParamRate(self.obj, pIndex, time_ms)
-
     # Gimbal methods
-    def getPayloadGimbalSettingByID(self, param_id: str):
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID(self.obj, param_id.encode('utf-8'))
-
     def setPayloadGimbalParamByID(self, param_id: str, value: float):
         self.lib.PayloadSdkInterface_setPayloadGimbalParamByID(self.obj, param_id.encode('utf-8'), value)
-
-    def getPayloadGimbalSettingList(self):
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingList(self.obj)
-
-    def getPayloadGimbalSettingByIndex(self, idx: int):
-        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByIndex(self.obj, idx)
 
     def sendPayloadGimbalCalibGyro(self):
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibGyro(self.obj)
@@ -320,46 +311,53 @@ class PayloadSdkInterface:
     def sendPayloadGimbalCalibMotor(self):
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibMotor(self.obj)
 
-    def setPayloadCameraFFCTrigg(self):
-        self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg(self.obj)   
-
-    def setPayloadCameraFFCMode(self, mode: int):
-        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode(self.obj, mode)      
-
-    def sendPayloadGPSPosition(self, gps: ctypes.Structure):
-        self.lib.PayloadSdkInterface_sendPayloadGPSPosition(self.obj, gps)    
-
-    def sendPayloadSystemTime(self, sys_time: ctypes.Structure):
-        self.lib.PayloadSdkInterface_sendPayloadSystemTime(self.obj, sys_time)        
-
     def sendPayloadGimbalSearchHome(self):
         self.lib.PayloadSdkInterface_sendPayloadGimbalSearchHome(self.obj)
 
     def sendPayloadGimbalAutoTune(self, status: bool):
         self.lib.PayloadSdkInterface_sendPayloadGimbalAutoTune(self.obj, status)
 
+    def getPayloadGimbalSettingList(self):
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingList(self.obj)
+
+    def getPayloadGimbalSettingByID(self, param_id: str):
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID(self.obj, param_id.encode('utf-8'))
+
+    def getPayloadGimbalSettingByIndex(self, idx: int):
+        self.lib.PayloadSdkInterface_getPayloadGimbalSettingByIndex(self.obj, idx)
+
     def setGimbalSpeed(self, spd_pitch: float, spd_roll: float, spd_yaw: float, mode: int):
         self.lib.PayloadSdkInterface_setGimbalSpeed(self.obj, spd_pitch, spd_roll, spd_yaw, mode)
 
-    # Tracking methods
+    # FFC methods
+    def setPayloadCameraFFCTrigg(self):
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg(self.obj)   
+
+    def setPayloadCameraFFCMode(self, mode: int):
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode(self.obj, mode)      
+
+    # GPS and system time methods
+    def sendPayloadGPSPosition(self, gps: ctypes.Structure):
+        self.lib.PayloadSdkInterface_sendPayloadGPSPosition(self.obj, gps)    
+
+    def sendPayloadSystemTime(self, sys_time: ctypes.Structure):
+        self.lib.PayloadSdkInterface_sendPayloadSystemTime(self.obj, sys_time)        
+
+    # Tracking method
     def setPayloadObjectTrackingParams(self, cmd: float, pos_x: float = 960, pos_y: float = 540):
         self.lib.PayloadSdkInterface_setPayloadObjectTrackingParams(self.obj, cmd, pos_x, pos_y)
 
-    def payload_recv_handle(self):
-        # Giả lập xử lý nhận tin nhắn, trong thực tế cần gọi hàm từ C++ nếu có
-        while not self.time_to_exit:
-            time.sleep(0.0001)  # Tương đương usleep(100)
-
-    # Thêm hàm getNewMessage
+    # Get new message new method
     def getNewMessage(self):
         msg = MavlinkMessageT()
         print("receive_messages", f"Size of MavlinkMessageT: {ctypes.sizeof(MavlinkMessageT)}")
         msg_cnt = self.lib.PayloadSdkInterface_getNewMessage(self.obj, ctypes.pointer(msg))
         return msg_cnt, msg
     
-    # def get_msgid(self):
-    #     # Đọc 24-bit từ mảng 3 byte (little-endian)
-    #     return int.from_bytes(self.msgid, byteorder='little') & 0xFFFFFF
+    # Payload receive handle method
+    def payload_recv_handle(self):
+        while not self.time_to_exit:
+            time.sleep(0.0001) 
 
     def __del__(self):
         self.lib.PayloadSdkInterface_delete(self.obj)
@@ -372,7 +370,7 @@ s_conn.udp.port = 14566
 
 # Example usage
 if __name__ == "__main__":
-    
+
     # Create payloadsdk object
     payload = PayloadSdkInterface(s_conn)
 
