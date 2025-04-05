@@ -1,5 +1,4 @@
 from enum import Enum
-import ctypes
 
 class CAMERA_ZOOM_TYPE(Enum):
    ZOOM_TYPE_STEP            =                                             0 
