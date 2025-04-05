@@ -1,9 +1,11 @@
 import ctypes
 import time
-import threading
+from enum import Enum
 from typing import Callable
+from payload_define import *
+from mavlink_define import *
 
-# Định nghĩa các kiểu dữ liệu từ payloadsdk.h
+# Connection info structures
 class T_ConnInfo_Uart(ctypes.Structure):
     _fields_ = [("name", ctypes.c_char_p),
                 ("baudrate", ctypes.c_int)]
@@ -20,7 +22,8 @@ class T_ConnInfoStruct(ctypes.Structure):
     _anonymous_ = ("device",)
     _fields_ = [("type", ctypes.c_uint8),
                 ("device", T_ConnInfo)]
-    
+
+# Mavlink message structures
 class MavlinkMessageT(ctypes.Structure):
     _pack_ = 1
     _fields_ = [
@@ -32,10 +35,29 @@ class MavlinkMessageT(ctypes.Structure):
         ("seq", ctypes.c_uint8),
         ("sysid", ctypes.c_uint8),
         ("compid", ctypes.c_uint8),
-        ("msgid", ctypes.c_uint8 * 3),  # Đổi thành mảng 3 byte thay vì c_uint32
+        ("msgid", ctypes.c_uint8 * 3), 
         ("payload64", ctypes.c_uint64 * 33),
         ("ck", ctypes.c_uint8 * 2),
         ("signature", ctypes.c_uint8 * 13),
+    ]
+
+class MavlinkGlobalPositionInt(ctypes.Structure):
+    _fields_ = [
+        ("time_boot_ms", ctypes.c_uint32), 
+        ("lat", ctypes.c_int32),           
+        ("lon", ctypes.c_int32),           
+        ("alt", ctypes.c_int32),           
+        ("relative_alt", ctypes.c_int32),  
+        ("vx", ctypes.c_int16),           
+        ("vy", ctypes.c_int16),            
+        ("vz", ctypes.c_int16),           
+        ("hdg", ctypes.c_uint16),     
+    ]   
+
+class MavlinkSystemTime(ctypes.Structure):
+    _fields_ = [
+        ("time_unix_usec", ctypes.c_uint64),  
+        ("time_boot_ms", ctypes.c_uint32),  
     ]
 
 # Callback types
@@ -43,45 +65,96 @@ PAYLOAD_PARAM_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p,
 PAYLOAD_STATUS_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.POINTER(ctypes.c_double))
 PAYLOAD_STREAMINFO_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
 
-# Hằng số từ payloadsdk.h
+# Payload type
+PAYLOAD_TYPE = "VIO"
+
+# Control types
 CONTROL_UDP = 1
 SDK_VERSION = "3.0.0_build.04022025"
-CAMERA_MODE_RECORD = 1  # Ví dụ, cần thêm đầy đủ từ enum
-INPUT_MODE_RATE = 2     # Ví dụ, cần thêm đầy đủ từ enum
+CAMERA_MODE_RECORD = 1  
+INPUT_MODE_RATE = 2    
 
-# Thêm các hằng số từ enum payload_status_event_t
-PAYLOAD_CAM_CAPTURE_STATUS = 0
-PAYLOAD_CAM_STORAGE_INFO = 1
-PAYLOAD_CAM_SETTINGS = 2
-PAYLOAD_CAM_PARAMS = 3
-PAYLOAD_GB_ATTITUDE = 4
-PAYLOAD_GB_PARAMS = 5
-PAYLOAD_ACK = 6
-PAYLOAD_CAM_INFO = 7
-PAYLOAD_CAM_STREAMINFO = 8
-PAYLOAD_PARAMS = 9
-PAYLOAD_PARAM_EXT_ACK = 10
+class param_type(Enum):
+    PARAM_TYPE_UINT8 = 1
+    PARAM_TYPE_INT8 = 2
+    PARAM_TYPE_UINT16 = 3
+    PARAM_TYPE_INT16 = 4
+    PARAM_TYPE_UINT32 = 5
+    PARAM_TYPE_INT32 = 6
+    PARAM_TYPE_UINT64 = 7
+    PARAM_TYPE_INT64  = 8
+    PARAM_TYPE_REAL32 = 9
+    PARAM_TYPE_REAL64 = 10
+
+class payload_status_event_t(Enum):
+    PAYLOAD_CAM_CAPTURE_STATUS = 0
+    PAYLOAD_CAM_STORAGE_INFO = 1
+    PAYLOAD_CAM_SETTINGS = 2
+    PAYLOAD_CAM_PARAMS = 3
+    PAYLOAD_GB_ATTITUDE = 4
+    PAYLOAD_GB_PARAMS = 5
+    PAYLOAD_ACK = 6
+    PAYLOAD_CAM_INFO  = 7
+    PAYLOAD_CAM_STREAMINFO = 8
+    PAYLOAD_PARAMS = 9
+    PAYLOAD_PARAM_EXT_ACK = 10
+
+class payload_param_t(Enum):
+    PARAM_EO_ZOOM_LEVEL = 0
+    PARAM_IR_ZOOM_LEVEL = 1
+    PARAM_LRF_RANGE = 2
+    PARAM_TRACK_POS_X = 3
+    PARAM_TRACK_POS_Y = 4
+    PARAM_TRACK_POS_W = 5
+    PARAM_TRACK_POS_H = 6
+    PARAM_TRACK_STATUS = 7
+    PARAM_LRF_OFSET_X = 8
+    PARAM_LRF_OFSET_Y = 9
+    PARAM_TARGET_COOR_LON = 10
+    PARAM_TARGET_COOR_LAT = 11
+    PARAM_TARGET_COOR_ALT = 12
+    PARAM_PAYLOAD_GPS_LON = 13
+    PARAM_PAYLOAD_GPS_LAT = 14
+    PARAM_PAYLOAD_GPS_ALT = 15
+    PARAM_PAYLOAD_APP_VER_X = 16
+    PARAM_PAYLOAD_APP_VER_Y = 17
+    PARAM_PAYLOAD_APP_VER_Z = 18
+    PARAM_CAM_VIEW_MODE = 19
+    PARAM_CAM_REC_SOURCE = 20
+    PARAM_CAM_IR_TYPE = 21
+    PARAM_CAM_IR_PALETTE_ID = 22
+    PARAM_CAM_IR_FFC_MODE = 23
+    PARAM_GIMBAL_MODE = 24
+    PARAM_COUNT = 25
+
+class input_mode_t(Enum):
+    INPUT_ANGLE = 1
+    INPUT_SPEED = 2
+
+class ffc_mode_t(Enum):
+    FFC_MODE_MANUAL = 0
+    FFC_MODE_AUTO = 1
+    FFC_MODE_END = 2
 
 class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
-        # Load thư viện động
-        self.lib = ctypes.CDLL("./PayloadSdk/build/libs/libPayloadSDK.so")  # Thay đường dẫn nếu cần
+
+        # Load the shared library
+        self.lib = ctypes.CDLL("./libPayloadSDK.so")
         
-        # Khởi tạo các hàm từ wrapper
         self._setup_function_prototypes()
         
-        # Tạo instance
         if conn_info is None:
             self.obj = self.lib.PayloadSdkInterface_new_default()
         else:
             self.obj = self.lib.PayloadSdkInterface_new(conn_info)
         
-        # Lưu callback
         self._param_callback = None
         self._status_callback = None
         self._stream_callback = None
 
     def _setup_function_prototypes(self):
+
         # Core functions
         self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
         self.lib.PayloadSdkInterface_new.restype = ctypes.c_void_p
@@ -115,6 +188,8 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_setPayloadCameraRecordVideoStop.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_setCameraZoom.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float]
         self.lib.PayloadSdkInterface_setCameraFocus.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float]
+        self.lib.PayloadSdkInterface_setParamRate.argtypes = [ctypes.c_void_p, ctypes.c_uint8, ctypes.c_uint16]
+
 
         # Gimbal functions
         self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
@@ -127,11 +202,15 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_sendPayloadGimbalSearchHome.argtypes = [ctypes.c_void_p]
         self.lib.PayloadSdkInterface_sendPayloadGimbalAutoTune.argtypes = [ctypes.c_void_p, ctypes.c_bool]
         self.lib.PayloadSdkInterface_setGimbalSpeed.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_uint8]
-
-        # Tracking
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg.argtypes = [ctypes.c_void_p]
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode.argtypes = [ctypes.c_void_p]
+        self.lib.PayloadSdkInterface_sendPayloadGPSPosition.argtypes = [ctypes.c_void_p, MavlinkGlobalPositionInt]
+        self.lib.PayloadSdkInterface_sendPayloadSystemTime.argtypes = [ctypes.c_void_p, MavlinkSystemTime]
+        
+        # Tracking functions
         self.lib.PayloadSdkInterface_setPayloadObjectTrackingParams.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float, ctypes.c_float]
 
-        # Thêm hàm getNewMessage
+        # GetNewMessage function
         self.lib.PayloadSdkInterface_getNewMessage.argtypes = [ctypes.c_void_p, ctypes.POINTER(MavlinkMessageT)]
         self.lib.PayloadSdkInterface_getNewMessage.restype = ctypes.c_uint8
 
@@ -164,7 +243,7 @@ class PayloadSdkInterface:
 
     def regPayloadStreamChanged(self, callback: Callable[[int, str, list], None]):
         self._stream_callback = PAYLOAD_STREAMINFO_CALLBACK_T(lambda event, param_char, param_double: 
-            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(2)]))
+            callback(event, param_char.decode('utf-8'), [param_double[i] for i in range(3)]))
         self.lib.PayloadSdkInterface_regPayloadStreamChanged(self.obj, self._stream_callback)
 
     # Camera methods
@@ -216,6 +295,9 @@ class PayloadSdkInterface:
     def setCameraFocus(self, focus_type: float, focus_value: float = 0):
         self.lib.PayloadSdkInterface_setCameraFocus(self.obj, focus_type, focus_value)
 
+    def setParamRate(self, pIndex: int, time_ms: int):
+        self.lib.PayloadSdkInterface_setParamRate(self.obj, pIndex, time_ms)
+
     # Gimbal methods
     def getPayloadGimbalSettingByID(self, param_id: str):
         self.lib.PayloadSdkInterface_getPayloadGimbalSettingByID(self.obj, param_id.encode('utf-8'))
@@ -237,6 +319,18 @@ class PayloadSdkInterface:
 
     def sendPayloadGimbalCalibMotor(self):
         self.lib.PayloadSdkInterface_sendPayloadGimbalCalibMotor(self.obj)
+
+    def setPayloadCameraFFCTrigg(self):
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg(self.obj)   
+
+    def setPayloadCameraFFCMode(self, mode: int):
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode(self.obj, mode)      
+
+    def sendPayloadGPSPosition(self, gps: ctypes.Structure):
+        self.lib.PayloadSdkInterface_sendPayloadGPSPosition(self.obj, gps)    
+
+    def sendPayloadSystemTime(self, sys_time: ctypes.Structure):
+        self.lib.PayloadSdkInterface_sendPayloadSystemTime(self.obj, sys_time)        
 
     def sendPayloadGimbalSearchHome(self):
         self.lib.PayloadSdkInterface_sendPayloadGimbalSearchHome(self.obj)
@@ -270,18 +364,45 @@ class PayloadSdkInterface:
     def __del__(self):
         self.lib.PayloadSdkInterface_delete(self.obj)
 
-# Cấu hình kết nối mặc định
+# Configuration connect
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
-s_conn.udp.ip = b"192.168.12.251"
+s_conn.udp.ip = b"192.168.12.248"
 s_conn.udp.port = 14566
 
-# Ví dụ sử dụng
+# Example usage
 if __name__ == "__main__":
+    # Create payloadsdk object
     payload = PayloadSdkInterface(s_conn)
+
+    # Init payload
     payload.sdkInitConnection()
-    payload.setGimbalSpeed(10.0, 0.0, 5.0, INPUT_MODE_RATE)
-    time.sleep(2)
-    payload.setGimbalSpeed(0.0, 0.0, 0.0, INPUT_MODE_RATE)
-    time.sleep(2)
-    payload.sdkQuit()
+
+    # Check connection
+    payload.checkPayloadConnection()
+
+    # Set gimbal RC mode
+    print("Set gimbal RC mode")
+    payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
+    time.sleep(0.1)  
+
+    # Move gimbal yaw to the right 20 deg/s
+    print("Move gimbal yaw to the right 20 deg/s, delay in 5secs")
+    payload.setGimbalSpeed(0, 0, 20, input_mode_t.INPUT_SPEED.value)
+    time.sleep(5) 
+
+    # Move gimbal yaw to the left 20 deg/s
+    print("Move gimbal yaw to the left 20 deg/s, delay in 5secs")
+    payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED.value)
+    time.sleep(5) 
+
+    # Keep gimbal stop
+    print("Keep gimbal stop, delay in 5secs")
+    payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED.value)
+    time.sleep(0.5)
+
+    # Close payload interface
+    try:
+        payload.sdkQuit()
+    except Exception as e:
+        print(f"Error while quitting payload: {e}")

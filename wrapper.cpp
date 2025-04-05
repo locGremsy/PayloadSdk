@@ -1,52 +1,40 @@
 #include "payloadSdkInterface.h"
 
-// Định nghĩa con trỏ hàm cho các callback
-// use pointer to function instead of std::function
+
 typedef void (*payload_param_callback_t)(int event, char *param_char, double *param);
 typedef void (*payload_status_callback_t)(int event, double *param);
 typedef void (*payload_streamInfo_callback_t)(int event, char *param_char, double *param);
 
-// Hàm tạo đối tượng với tham số
+
 extern "C" void *PayloadSdkInterface_new(T_ConnInfo conn)
 {
     return new PayloadSdkInterface(conn);
 }
 
-// Hàm tạo đối tượng mặc định
 extern "C" void *PayloadSdkInterface_new_default()
 {
     return new PayloadSdkInterface();
 }
 
-// Hàm hủy đối tượng
 extern "C" void PayloadSdkInterface_delete(void *obj)
 {
     delete (PayloadSdkInterface *)obj;
 }
 
-// Khởi tạo kết nối
 extern "C" int PayloadSdkInterface_sdkInitConnection(void *obj)
 {
     return ((PayloadSdkInterface *)obj)->sdkInitConnection();
 }
 
-// Đóng kết nối
 extern "C" void PayloadSdkInterface_sdkQuit(void *obj)
 {
     ((PayloadSdkInterface *)obj)->sdkQuit();
 }
 
-// Kiểm tra kết nối
 extern "C" void PayloadSdkInterface_checkPayloadConnection(void *obj)
 {
     ((PayloadSdkInterface *)obj)->checkPayloadConnection();
 }
-
-// Đăng ký callback
-// extern "C" void PayloadSdkInterface_regPayloadStatusChanged(void *obj, payload_status_callback_t callback)
-// {
-//     ((PayloadSdkInterface *)obj)->regPayloadStatusChanged(callback);
-// }
 
 extern "C" void PayloadSdkInterface_regPayloadParamChanged(void *obj, payload_param_callback_t callback)
 {
@@ -75,7 +63,6 @@ extern "C" void PayloadSdkInterface_regPayloadStreamChanged(void *obj, payload_s
     ((PayloadSdkInterface *)obj)->regPayloadStreamChanged(cb);
 }
 
-// Payload Camera
 extern "C" void PayloadSdkInterface_setPayloadCameraParam(void *obj, const char *param_id, uint32_t param_value, uint8_t param_type)
 {
     ((PayloadSdkInterface *)obj)->setPayloadCameraParam((char *)param_id, param_value, param_type);
@@ -156,7 +143,6 @@ extern "C" void PayloadSdkInterface_setCameraFocus(void *obj, float focusType, f
     ((PayloadSdkInterface *)obj)->setCameraFocus(focusType, focusValue);
 }
 
-// Payload Gimbal
 extern "C" void PayloadSdkInterface_getPayloadGimbalSettingByID(void *obj, const char *param_id)
 {
     ((PayloadSdkInterface *)obj)->getPayloadGimbalSettingByID((char *)param_id);
@@ -207,17 +193,10 @@ extern "C" void PayloadSdkInterface_setGimbalSpeed(void *obj, float spd_pitch, f
     ((PayloadSdkInterface *)obj)->setGimbalSpeed(spd_pitch, spd_roll, spd_yaw, (input_mode_t)mode);
 }
 
-// Payload Tracking & GPS
 extern "C" void PayloadSdkInterface_setPayloadObjectTrackingParams(void *obj, float cmd, float pos_x, float pos_y)
 {
     ((PayloadSdkInterface *)obj)->setPayloadObjectTrackingParams(cmd, pos_x, pos_y);
 }
-
-// extern "C" uint8_t PayloadSdkInterface_getNewMessage(void* obj, mavlink_message_t* msg) {
-//     uint8_t cnt = ((PayloadSdkInterface*)obj)->getNewMewssage(*msg);
-//     SDK_LOG("getNewMessage: cnt=%d, msgid=%d", cnt, msg->msgid);  // Thêm log để debug
-//     return ((PayloadSdkInterface*)obj)->getNewMewssage(*msg);
-// }
 
 extern "C" uint8_t PayloadSdkInterface_getNewMessage(void *obj, mavlink_message_t *msg)
 {
@@ -231,4 +210,27 @@ extern "C" uint8_t PayloadSdkInterface_getNewMessage(void *obj, mavlink_message_
     return cnt;
 }
 
-// Thêm các hàm khác nếu cần (sendPayloadGPSPosition, sendPayloadSystemTime, etc.)
+extern "C" void PayloadSdkInterface_setParamRate(void *obj, uint8_t pIndex, uint16_t time_ms)
+{
+    ((PayloadSdkInterface *)obj)->setParamRate(pIndex, time_ms);
+}
+
+extern "C" void PayloadSdkInterface_setPayloadCameraFFCTrigg(void *obj)
+{
+    ((PayloadSdkInterface *)obj)->setPayloadCameraFFCTrigg();
+}
+
+extern "C" void PayloadSdkInterface_setPayloadCameraFFCMode(void *obj, uint8_t mode)
+{
+    ((PayloadSdkInterface *)obj)->setPayloadCameraFFCMode(ffc_mode_t(mode));
+}
+
+extern "C" void PayloadSdkInterface_sendPayloadGPSPosition(void *obj, mavlink_global_position_int_t gps)
+{
+    ((PayloadSdkInterface *)obj)->sendPayloadGPSPosition(mavlink_global_position_int_t(gps));
+}
+
+extern "C" void PayloadSdkInterface_sendPayloadSystemTime(void *obj, mavlink_system_time_t sys_time)
+{
+    ((PayloadSdkInterface *)obj)->sendPayloadSystemTime(mavlink_system_time_t(sys_time));
+}
