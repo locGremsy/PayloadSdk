@@ -5,6 +5,15 @@ from typing import Callable
 from payload_define import *
 from mavlink_define import *
 
+# Payload type
+PAYLOAD_TYPE = "VIO"
+
+# Control types
+CONTROL_UDP = 1
+SDK_VERSION = "3.0.0_build.04022025"
+CAMERA_MODE_RECORD = 1  
+INPUT_MODE_RATE = 2    
+
 # Connection info structures
 class T_ConnInfo_Uart(ctypes.Structure):
     _fields_ = [("name", ctypes.c_char_p),
@@ -23,59 +32,7 @@ class T_ConnInfoStruct(ctypes.Structure):
     _fields_ = [("type", ctypes.c_uint8),
                 ("device", T_ConnInfo)]
 
-# Mavlink message structures
-class MavlinkMessageT(ctypes.Structure):
-    _pack_ = 1
-    _fields_ = [
-        ("checksum", ctypes.c_uint16),
-        ("magic", ctypes.c_uint8),
-        ("len", ctypes.c_uint8),
-        ("incompat_flags", ctypes.c_uint8),
-        ("compat_flags", ctypes.c_uint8),
-        ("seq", ctypes.c_uint8),
-        ("sysid", ctypes.c_uint8),
-        ("compid", ctypes.c_uint8),
-        ("msgid", ctypes.c_uint8 * 3), 
-        ("payload64", ctypes.c_uint64 * 33),
-        ("ck", ctypes.c_uint8 * 2),
-        ("signature", ctypes.c_uint8 * 13),
-    ]
-
-# Mavlink global position structures
-class MavlinkGlobalPositionInt(ctypes.Structure):
-    _fields_ = [
-        ("time_boot_ms", ctypes.c_uint32), 
-        ("lat", ctypes.c_int32),           
-        ("lon", ctypes.c_int32),           
-        ("alt", ctypes.c_int32),           
-        ("relative_alt", ctypes.c_int32),  
-        ("vx", ctypes.c_int16),           
-        ("vy", ctypes.c_int16),            
-        ("vz", ctypes.c_int16),           
-        ("hdg", ctypes.c_uint16),     
-    ]   
-
-# Mavlink system time structures
-class MavlinkSystemTime(ctypes.Structure):
-    _fields_ = [
-        ("time_unix_usec", ctypes.c_uint64),  
-        ("time_boot_ms", ctypes.c_uint32),  
-    ]
-
-# Callback types
-PAYLOAD_PARAM_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
-PAYLOAD_STATUS_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.POINTER(ctypes.c_double))
-PAYLOAD_STREAMINFO_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
-
-# Payload type
-PAYLOAD_TYPE = "VIO"
-
-# Control types
-CONTROL_UDP = 1
-SDK_VERSION = "3.0.0_build.04022025"
-CAMERA_MODE_RECORD = 1  
-INPUT_MODE_RATE = 2    
-
+# Param type enum
 class param_type(Enum):
     PARAM_TYPE_UINT8 = 1
     PARAM_TYPE_INT8 = 2
@@ -88,6 +45,7 @@ class param_type(Enum):
     PARAM_TYPE_REAL32 = 9
     PARAM_TYPE_REAL64 = 10
 
+# Payload status event enum
 class payload_status_event_t(Enum):
     PAYLOAD_CAM_CAPTURE_STATUS = 0
     PAYLOAD_CAM_STORAGE_INFO = 1
@@ -101,6 +59,7 @@ class payload_status_event_t(Enum):
     PAYLOAD_PARAMS = 9
     PAYLOAD_PARAM_EXT_ACK = 10
 
+# Payload param enum
 class payload_param_t(Enum):
     PARAM_EO_ZOOM_LEVEL = 0
     PARAM_IR_ZOOM_LEVEL = 1
@@ -129,20 +88,27 @@ class payload_param_t(Enum):
     PARAM_GIMBAL_MODE = 24
     PARAM_COUNT = 25
 
+# Input mode enum
 class input_mode_t(Enum):
     INPUT_ANGLE = 1
     INPUT_SPEED = 2
 
+# FFC mode enum
 class ffc_mode_t(Enum):
     FFC_MODE_MANUAL = 0
     FFC_MODE_AUTO = 1
     FFC_MODE_END = 2
 
+# Callback types
+PAYLOAD_PARAM_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
+PAYLOAD_STATUS_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.POINTER(ctypes.c_double))
+PAYLOAD_STREAMINFO_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
+
 class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
 
         # Load the shared library
-        self.lib = ctypes.CDLL("./libPayloadSDK.so")
+        self.lib = ctypes.CDLL("./PayloadSdk/build/libs/libPayloadSDK.so")
         
         self._setup_function_prototypes()
         
