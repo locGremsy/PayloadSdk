@@ -3,16 +3,15 @@ import signal
 import sys
 import threading
 from enum import Enum
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, param_type, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
-import pretty_errors
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, param_type, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
 import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst, GLib
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -33,7 +32,7 @@ class get_stream_sequence_t(Enum):
     START_PIPELINE = 3
     PIPELINE_RUNNING = 4
 
-my_job = get_stream_sequence_t.IDLE.value
+my_job = get_stream_sequence_t.CHECK_CAMERA_INFO.value
 time_to_view = 10
 
 # Signal handler for quitting
@@ -146,22 +145,16 @@ def main():
     my_payload.sdkInitConnection()
     print("Waiting for payload signal!")
 
-    # Register callback function
+    # Register callback functions
     my_payload.regPayloadStatusChanged(onPayloadStatusChanged)
     my_payload.regPayloadStreamChanged(onPayloadStreamChanged)
 
     # Check connection
     my_payload.checkPayloadConnection()
 
-    # Set view source
-    my_payload.setPayloadCameraParam(
-        PAYLOAD_CAMERA_VIEW_SRC,
-        Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IREO.value,
-        param_type.PARAM_TYPE_UINT32.value
-    )
+    # Set view source to IREO
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IREO.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.5)
-
-    my_job = get_stream_sequence_t.CHECK_CAMERA_INFO.value
 
     while not time_to_exit:
         if my_job == get_stream_sequence_t.IDLE.value:

@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, CONTROL_UDP, PAYLOAD_TYPE
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, CONTROL_UDP, PAYLOAD_TYPE
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -42,7 +42,7 @@ def main():
     # Check payload connection
     my_payload.checkPayloadConnection()
 
-    # Set view source
+    # Set view source to EO
     print("Set view source to EO!")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EO.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.5)  

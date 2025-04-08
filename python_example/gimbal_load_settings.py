@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"  
@@ -62,7 +62,7 @@ def main():
     my_payload.sdkInitConnection()
     print("Waiting for payload signal!\n")
 
-    # Register callback function
+    # Register callback functions
     my_payload.regPayloadParamChanged(onPayloadParamChanged)
     my_payload.regPayloadStatusChanged(onPayloadStatusChanged)
 
@@ -75,7 +75,7 @@ def main():
     # Request to read a specific param by index
     # my_payload.getPayloadGimbalSettingByIndex(0)
 
-    # Request to read a specific param by id_string
+    # Request to read a specific param by ID
     # my_payload.getPayloadGimbalSettingByID("VERSION_X")
 
     while True:

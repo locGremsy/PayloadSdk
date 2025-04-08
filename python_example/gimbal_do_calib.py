@@ -2,9 +2,9 @@ import time
 import signal
 import sys
 from enum import Enum
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
 # Define constants for MAVLink commands
 MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION = 42503  
@@ -13,7 +13,7 @@ MAV_CMD_USER_3 = 300
 MAV_RESULT_ACCEPTED = 0
 MAV_RESULT_IN_PROGRESS = 5
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -31,10 +31,10 @@ is_calibration_running = False
 is_exit = False
 start_time = time.time() * 1000000 
 
-# Set the calib type
+# Set the calibration type
 my_calib = calib_type_t.CALIB_GYRO.value
 
-# Sdk log function
+# SDK log function
 def sdk_log(func_name, message):
     elapsed_time = int((time.time() * 1000000) - start_time)
     print(f"[{elapsed_time}] SDK {func_name}(): {message}")
@@ -189,11 +189,11 @@ def main():
         my_payload.sendPayloadGimbalSearchHome()
         sdk_log("main", "Searching Home command was sent. Waiting for the calibration done...")
 
-    # Waiting the calib process done
+    # Wait for the calibration process to complete
     while not is_exit:
         time.sleep(1)  
 
-    # Load params to verify
+    # Load parameters to verify calibration
     if my_calib == calib_type_t.CALIB_GYRO.value:
         sdk_log("main", "Load the Gyro offset values...")
         my_payload.getPayloadGimbalSettingByID("GYROX_OFFSET")

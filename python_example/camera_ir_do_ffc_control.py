@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, ffc_mode_t, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, ffc_mode_t, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -59,7 +59,7 @@ def main():
     print("Change FFC to Manual, waiting for 5secs.")
     time.sleep(5)  
 
-    # Check payload messages
+    # Perform FFC trigger operations in a loop
     while not time_to_exit:
         if ffc_trigger_cnt < ffc_trigger_cnt_max:
             ffc_trigger_cnt += 1

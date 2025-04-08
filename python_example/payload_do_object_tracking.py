@@ -4,11 +4,11 @@ import sys
 import threading
 import random
 from enum import Enum
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, payload_param_t, param_type, CONTROL_UDP, PAYLOAD_TYPE
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, payload_param_t, param_type, CONTROL_UDP, PAYLOAD_TYPE
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -74,8 +74,8 @@ def handle_tracking():
 
     while not time_to_exit:
         # Random tracking bounding box
-        random_w = random.randint(20, 1920)     # 1920 + 1 to include 1920
-        random_h = random.randint(20, 1080)     # 1080 + 1 to include 1080
+        random_w = random.randint(20, 1920)     
+        random_h = random.randint(20, 1080)    
 
         print("Start tracking new object")
         my_payload.setPayloadObjectTrackingParams(tracking_cmd_t.TRACK_ACT.value, random_w, random_h)

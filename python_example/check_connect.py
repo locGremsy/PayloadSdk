@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -45,9 +45,9 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
 
-    # Check payload messages
+    # Keep program running to maintain connection
     while not time_to_exit:
-        # do nothing
+        # Short delay to prevent high CPU usage
         time.sleep(0.001)
 
 if __name__ == "__main__":

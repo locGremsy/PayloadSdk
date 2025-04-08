@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, input_mode_t, param_type, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, input_mode_t, param_type, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -43,7 +43,7 @@ def main():
     my_payload.checkPayloadConnection()
     time.sleep(0.1)
 
-    # Set gimbal RC mode 
+    # Set gimbal RC mode to STANDARD 
     print("Set gimbal RC mode")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.1)  

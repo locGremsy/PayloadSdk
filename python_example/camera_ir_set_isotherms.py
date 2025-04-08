@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -41,19 +41,19 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
 
-    # Set view source
+    # Set view source to IR
     print("Set view source to IR!")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IR.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(1) 
 
-    # Enable IR Isotherms with high GAIN
+    # Enable IR isotherms with high gain
     print("Enable IR Isotherms with high GAIN, sleep 5s ...")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ISOTHERMS, Payload_Camera_Ir_Isotherms.PAYLOAD_CAMERA_IR_ISOTHERMS_ENABLE.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.1) 
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ISOTHERMS_GAIN, Payload_Camera_Ir_Isotherms_Gain.PAYLOAD_CAMERA_IR_ISOTHERMS_HIGH_GAIN.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(5)  
 
-    # Switch low GAIN
+    # Switch to low gain
     print("Switch low GAIN, sleep 5s ...")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ISOTHERMS_GAIN, Payload_Camera_Ir_Isotherms_Gain.PAYLOAD_CAMERA_IR_ISOTHERMS_LOW_GAIN, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(5) 

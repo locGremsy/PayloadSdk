@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, payload_param_t, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, payload_param_t, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -68,18 +68,18 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
     
-    # Register to get status 
+    # Register to receive zoom status updates
     my_payload.setParamRate(payload_param_t.PARAM_EO_ZOOM_LEVEL.value, 1000)  
     my_payload.setParamRate(payload_param_t.PARAM_IR_ZOOM_LEVEL.value, 1000)  
     
-    # Set view source
+    # Set view source to EO/IR
     print("Set view source to EO/IR!")
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EOIR.value, param_type.PARAM_TYPE_UINT32.value) 
 
-    # Change EO zoom mode to Super resolution
+    # Change EO zoom mode to Super Resolution
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, Payload_Camera_Video_Zoom_Mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION.value, param_type.PARAM_TYPE_UINT32.value) 
 
-    # Check payload messages
+    # Perform zoom operations in a loop
     while not time_to_exit:
 
         # Zoom EO to 1x
@@ -102,7 +102,7 @@ def main():
         my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_4X.value, param_type.PARAM_TYPE_UINT32.value) 
         time.sleep(3)  
         
-        # Do nothing
+        # Short delay to prevent high CPU usage
         time.sleep(0.001)
 
 if __name__ == "__main__":

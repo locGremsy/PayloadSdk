@@ -2,9 +2,9 @@ import time
 import signal
 import sys
 from enum import Enum
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, CONTROL_UDP
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, CONTROL_UDP
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
 # Configuration connect
 s_conn = T_ConnInfoStruct()
@@ -132,9 +132,9 @@ def main():
 
     while not time_to_exit:
 
-        # Caputre image with payload, follow this sequence
+        # Capture IR image with payload following this sequence
         if my_capture == capture_sequence_t.IDLE.value:
-            # Do nothing
+            # Wait in idle state
             pass  
         elif my_capture == capture_sequence_t.CHECK_STORAGE.value:
             my_payload.getPayloadStorage()

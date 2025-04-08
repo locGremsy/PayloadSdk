@@ -2,8 +2,8 @@ import ctypes
 import time
 from enum import Enum
 from typing import Callable
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
 # Payload type
 PAYLOAD_TYPE = "VIO"
@@ -108,7 +108,7 @@ class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
 
         # Load the shared library
-        self.lib = ctypes.CDLL("./PayloadSdk/build/libs/libPayloadSDK.so")
+        self.lib = ctypes.CDLL("../build/libs/libPayloadSDK.so")
         
         self._setup_function_prototypes()
         
@@ -328,7 +328,7 @@ class PayloadSdkInterface:
     def __del__(self):
         self.lib.PayloadSdkInterface_delete(self.obj)
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"

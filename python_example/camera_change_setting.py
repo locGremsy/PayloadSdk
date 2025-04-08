@@ -1,11 +1,11 @@
 import time
 import signal
 import sys
-from payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, CONTROL_UDP, PAYLOAD_TYPE
-from payload_define import *
-from mavlink_define import *
+from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, CONTROL_UDP, PAYLOAD_TYPE
+from ..libs.payload_define import *
+from ..libs.mavlink_define import *
 
-# Configuration connect
+# Configuration for connection
 s_conn = T_ConnInfoStruct()
 s_conn.type = CONTROL_UDP
 s_conn.udp.ip = b"192.168.12.248"
@@ -56,11 +56,11 @@ def main():
     # Change setting of RC_MODE to STANDARD
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value) 
     
-    # Change setting of OSD_MODE to STATUS to View Zoom Factor
+    # Change setting of OSD_MODE to STATUS to enable viewing of the zoom factor
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE , Payload_Camera_Osd_Mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_STATUS.value, param_type.PARAM_TYPE_UINT32.value)  
     
     print("------------------------> Init values \n")
-    # Request to read all settings of payload, then check the RC_MODE setting
+    # Request to read all settings of the payload and then check the RC_MODE setting
     my_payload.getPayloadCameraSettingList()
     time.sleep(3)  
 
@@ -70,7 +70,7 @@ def main():
         my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, Payload_Camera_Video_Zoom_Mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION.value, param_type.PARAM_TYPE_UINT32.value) 
         time.sleep(3)  
 
-    # Request to read all settings of payload to verify
+    # Request to read all settings of the payload to verify the changes
     print("------------------------> Changed values \n")
     my_payload.getPayloadCameraSettingList()
     time.sleep(3)  
