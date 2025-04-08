@@ -19,24 +19,30 @@ def encode_url_spaces(name: str) -> str:
 def decode_url_spaces(name: str) -> str:
     return name.replace("%20", " ")
 
+# Ensure the path ends with a trailing slash
 def ensure_trailing_slash(path: str) -> str:
     return path if path.endswith('/') else path + '/'
 
+# Check if the file name has an image extension
 def is_image_extension(file_name: str) -> bool:
     image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
     return any(file_name.lower().endswith(ext) for ext in image_extensions)
 
+# Check if the file name has a video extension
 def is_video_extension(file_name: str) -> bool:
     video_extensions = [".mp4", ".avi", ".mov", ".mkv", ".wmv"]
     return any(file_name.lower().endswith(ext) for ext in video_extensions)
 
+# Check if the path is a directory path (starts with /)
 def is_directory_path(path: str) -> bool:
     return path.startswith('/')
 
+# Check if the string is a valid IP address
 def is_ip_address(ip: str) -> bool:
     pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
     return bool(re.match(pattern, ip))
 
+# Fetch and list media files from the given URL
 def directory_listing(url: str) -> None:
     global href_elements, listed
     href_elements.clear()
@@ -58,6 +64,7 @@ def directory_listing(url: str) -> None:
     except requests.RequestException as e:
         print(f"Request failed: {e}")
 
+# Download a file from the specified URL to the local directory
 def download_file(url: str, file_name: str) -> None:
     download_url = f"{url}/download/{file_name}"
     local_file_name = decode_url_spaces(file_name)
@@ -83,6 +90,7 @@ def download_file(url: str, file_name: str) -> None:
     except Exception as e:
         print(f"Request failed: {e}")
 
+# Main function to handle user interaction and media file downloads
 def main():
     global download_directory
 

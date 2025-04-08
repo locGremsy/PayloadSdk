@@ -120,7 +120,7 @@ def main():
     # Check payload connection
     my_payload.checkPayloadConnection()
 
-    # Init the environment
+    # Initialize environment for object tracking
 	# Change view mode to EO
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EO.value, param_type.PARAM_TYPE_UINT32.value)
 
@@ -131,7 +131,7 @@ def main():
     # Change OSD mode to Status
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE, Payload_Camera_Osd_Mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_STATUS.value, param_type.PARAM_TYPE_UINT32.value)
 
-	# Init the status messages rate
+	# Set status message rate
 	# If you do not want to receive the message anymore, need to set rate to 0
     my_payload.setParamRate(payload_param_t.PARAM_TRACK_POS_X.value, 100)
     my_payload.setParamRate(payload_param_t.PARAM_TRACK_POS_Y.value, 100)
@@ -142,9 +142,9 @@ def main():
     # Init threads
     all_threads_init()
 
-    # Check payload messages
+    # Keep program running to process tracking
     while not time_to_exit:
-        # Do nothing
+        # Short delay to prevent high CPU usage
         time.sleep(0.001)
 
 if __name__ == "__main__":

@@ -313,7 +313,7 @@ class PayloadSdkInterface:
     def setPayloadObjectTrackingParams(self, cmd: float, pos_x: float = 960, pos_y: float = 540):
         self.lib.PayloadSdkInterface_setPayloadObjectTrackingParams(self.obj, cmd, pos_x, pos_y)
 
-    # Get new message new method
+    # Get new message method
     def getNewMessage(self):
         msg = MavlinkMessageT()
         print("receive_messages", f"Size of MavlinkMessageT: {ctypes.sizeof(MavlinkMessageT)}")
@@ -346,7 +346,7 @@ if __name__ == "__main__":
     # Check connection
     payload.checkPayloadConnection()
 
-    # Set gimbal RC mode
+    # Set gimbal RC mode to STANDARD
     print("Set gimbal RC mode")
     payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.1)  
@@ -361,7 +361,7 @@ if __name__ == "__main__":
     payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED.value)
     time.sleep(5) 
 
-    # Keep gimbal stop
+    # Stop gimbal movement
     print("Keep gimbal stop, delay in 5secs")
     payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED.value)
     time.sleep(0.5)

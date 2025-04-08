@@ -48,51 +48,51 @@ def onPayloadStatusChanged(event: int, param: list):
         elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL.value:
             print(f"Payload IR_ZOOM_LEVEL: {param[1]:.2f}")
 
-        # elif PAYLOAD_TYPE == "VIO":
-        #     if param[0] == payload_param_t.PARAM_LRF_RANGE.value:
-        #         print(f"Payload LRF_RANGE: {param[1]:.2f}")
+        elif PAYLOAD_TYPE == "VIO":
+            if param[0] == payload_param_t.PARAM_LRF_RANGE.value:
+                print(f"Payload LRF_RANGE: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_LRF_OFSET_X.value:
-        #         print(f"Payload PARAM_LRF_OFSET_X: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_LRF_OFSET_X.value:
+                print(f"Payload PARAM_LRF_OFSET_X: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_LRF_OFSET_Y.value:
-        #         print(f"Payload PARAM_LRF_OFSET_Y: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_LRF_OFSET_Y.value:
+                print(f"Payload PARAM_LRF_OFSET_Y: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_TARGET_COOR_LON.value:
-        #         print(f"Payload PARAM_TARGET_COOR_LON: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LON.value:
+                print(f"Payload PARAM_TARGET_COOR_LON: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_TARGET_COOR_LAT.value:
-        #         print(f"Payload PARAM_TARGET_COOR_LAT: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LAT.value:
+                print(f"Payload PARAM_TARGET_COOR_LAT: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_TARGET_COOR_ALT.value:
-        #         print(f"Payload PARAM_TARGET_COOR_ALT: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_ALT.value:
+                print(f"Payload PARAM_TARGET_COOR_ALT: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_CAM_VIEW_MODE.value:
-        #         print(f"Payload PARAM_CAM_VIEW_MODE: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_CAM_VIEW_MODE.value:
+                print(f"Payload PARAM_CAM_VIEW_MODE: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_CAM_REC_SOURCE.value:
-        #         print(f"Payload PARAM_CAM_REC_SOURCE: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_CAM_REC_SOURCE.value:
+                print(f"Payload PARAM_CAM_REC_SOURCE: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_CAM_IR_TYPE.value:
-        #         print(f"Payload PARAM_CAM_IR_TYPE: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_CAM_IR_TYPE.value:
+                print(f"Payload PARAM_CAM_IR_TYPE: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_CAM_IR_PALETTE_ID.value:
-        #         print(f"Payload PARAM_CAM_IR_PALETTE_ID: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_CAM_IR_PALETTE_ID.value:
+                print(f"Payload PARAM_CAM_IR_PALETTE_ID: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_GIMBAL_MODE.value:
-        #         print(f"Payload PARAM_GIMBAL_MODE: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_GIMBAL_MODE.value:
+                print(f"Payload PARAM_GIMBAL_MODE: {param[1]:.2f}")
 
-        #     elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LON.value:
-        #         print(f"Payload PARAM_PAYLOAD_GPS_LON: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LON.value:
+                print(f"Payload PARAM_PAYLOAD_GPS_LON: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LAT.value:
-        #         print(f"Payload PARAM_PAYLOAD_GPS_LAT: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LAT.value:
+                print(f"Payload PARAM_PAYLOAD_GPS_LAT: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_ALT.value:
-        #         print(f"Payload PARAM_PAYLOAD_GPS_ALT: {param[1]:.6f}")
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_ALT.value:
+                print(f"Payload PARAM_PAYLOAD_GPS_ALT: {param[1]:.6f}")
 
-        #     elif param[0] == payload_param_t.PARAM_CAM_IR_FFC_MODE.value:
-        #         print(f"Payload PARAM_CAM_IR_FFC_MODE: {param[1]:.2f}")
+            elif param[0] == payload_param_t.PARAM_CAM_IR_FFC_MODE.value:
+                print(f"Payload PARAM_CAM_IR_FFC_MODE: {param[1]:.2f}")
 
 def main():
     global my_payload

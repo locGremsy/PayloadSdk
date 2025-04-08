@@ -70,7 +70,7 @@ def main():
     my_payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED.value)
     time.sleep(5) 
 
-    # Keep gimbal stop
+    # Stop gimbal movement
     print("Keep gimbal stop, delay in 5secs")
     my_payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED.value)
     time.sleep(0.5) 

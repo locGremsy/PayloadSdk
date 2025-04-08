@@ -54,10 +54,10 @@ def main():
 
         sys_time = MavlinkSystemTime()
         sys_time.time_boot_ms = boot_time_ms
-        boot_time_ms += 100  # Need to add boot time of your system here
+        boot_time_ms += 100  # Need to add boot time milliseconds of your system here
         sys_time.time_unix_usec = get_epoch_time_in_microseconds()  # Get the current time in epoch time in microseconds
 
-        # Send system time to system
+        # Send system time to payload
         my_payload.sendPayloadSystemTime(sys_time)
         print(f"Send System Time to payload: {msg_cnt}, {sys_time.time_unix_usec}")
         msg_cnt += 1

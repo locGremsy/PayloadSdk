@@ -52,14 +52,14 @@ def main():
         gps = MavlinkGlobalPositionInt()
         gps.time_boot_ms = boot_time_ms
         boot_time_ms += 100               # Need to add boot_time_ms of your system here
-        gps.lat = int(40.730610 * 1e7)    # The location of NewYork city
+        gps.lat = int(40.730610 * 1e7)    # The location of New York City
         gps.lon = int(-73.935242 * 1e7)   
         gps.alt = int(50 * 1e3)           
         gps.relative_alt = 0              
-        gps.vx = 0                        # Don't use
-        gps.vy = 0                        # Don't use
-        gps.vz = 0                        # Don't use
-        gps.hdg = 90                      # The heading of GPS
+        gps.vx = 0                        # Unused in this example
+        gps.vy = 0                        # Unused in this example
+        gps.vz = 0                        # Unused in this example
+        gps.hdg = 90                      # GPS heading
 
         # Send GPS data
         my_payload.sendPayloadGPSPosition(gps)

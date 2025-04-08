@@ -1,7 +1,7 @@
 from enum import Enum
 import ctypes
 
-# Mavlink message structures
+# MAVLink message structures
 class MavlinkMessageT(ctypes.Structure):
     _pack_ = 1
     _fields_ = [
@@ -19,7 +19,7 @@ class MavlinkMessageT(ctypes.Structure):
         ("signature", ctypes.c_uint8 * 13),
     ]
 
-# Mavlink global position structures
+# MAVLink global position structure
 class MavlinkGlobalPositionInt(ctypes.Structure):
     _fields_ = [
         ("time_boot_ms", ctypes.c_uint32), 
@@ -33,7 +33,7 @@ class MavlinkGlobalPositionInt(ctypes.Structure):
         ("hdg", ctypes.c_uint16),     
     ]   
 
-# Mavlink system time structures
+# MAVLink system time structure
 class MavlinkSystemTime(ctypes.Structure):
     _fields_ = [
         ("time_unix_usec", ctypes.c_uint64),  

@@ -112,7 +112,7 @@ def run_video_stream():
     # Cleanup when loop exits
     main_pipeline.set_state(Gst.State.NULL)
 
-# Pipeline handle to show video
+# Start GStreamer pipeline to display video
 def gstreamer_start():
     global video_thread
     video_thread = threading.Thread(target=run_video_stream)
@@ -120,7 +120,7 @@ def gstreamer_start():
     video_thread.start()
     print("GStreamer thread created\n")
 
-# Pipeline handle to stop video
+# Stop GStreamer pipeline
 def gstreamer_terminate():
     global time_to_exit, main_pipeline, loop
     print("Exit GStreamer")
@@ -152,7 +152,7 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
 
-    # Set view source to IREO
+    # Set view source to IR/EO
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IREO.value, param_type.PARAM_TYPE_UINT32.value)
     time.sleep(0.5)
 
