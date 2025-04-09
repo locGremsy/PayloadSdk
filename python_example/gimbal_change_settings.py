@@ -5,15 +5,9 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
+from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *
-
-# Configuration for connection
-s_conn = T_ConnInfoStruct()
-s_conn.type = CONTROL_UDP
-s_conn.udp.ip = b"192.168.12.248"
-s_conn.udp.port = 14566
 
 my_payload = None
 STIFF_TILT_VALUE = 0.0
@@ -62,7 +56,7 @@ def main():
     signal.signal(signal.SIGINT, quit_handler)
     
     # Create payloadsdk object
-    my_payload = PayloadSdkInterface(s_conn)
+    my_payload = PayloadSdkInterface()
     
     # Init payload
     my_payload.sdkInitConnection()
