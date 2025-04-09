@@ -4,15 +4,13 @@ import sys
 import threading
 import random
 from enum import Enum
-from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, payload_param_t, param_type, CONTROL_UDP, PAYLOAD_TYPE
-from ..libs.payload_define import *
-from ..libs.mavlink_define import *
+import os
 
-# Configuration for connection
-s_conn = T_ConnInfoStruct()
-s_conn.type = CONTROL_UDP
-s_conn.udp.ip = b"192.168.12.248"
-s_conn.udp.port = 14566
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, payload_param_t, param_type, PAYLOAD_TYPE
+from libs_python.payload_define import *
+from libs_python.mavlink_define import *
 
 my_payload = None
 time_to_exit = False
@@ -108,7 +106,7 @@ def main():
     signal.signal(signal.SIGINT, quit_handler)
 
     # Create payloadsdk object
-    my_payload = PayloadSdkInterface(s_conn)
+    my_payload = PayloadSdkInterface()
 
     # Init payload
     my_payload.sdkInitConnection()

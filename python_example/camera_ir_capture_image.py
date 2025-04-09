@@ -2,15 +2,13 @@ import time
 import signal
 import sys
 from enum import Enum
-from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, param_type, payload_status_event_t, CONTROL_UDP
-from ..libs.payload_define import *
-from ..libs.mavlink_define import *
+import os
 
-# Configuration connect
-s_conn = T_ConnInfoStruct()
-s_conn.type = CONTROL_UDP
-s_conn.udp.ip = b"192.168.12.248"
-s_conn.udp.port = 14566         
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from libs_python.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t
+from libs_python.payload_define import *
+from libs_python.mavlink_define import *        
 
 my_payload = None
 image_to_capture = 3
@@ -114,7 +112,7 @@ def main():
     signal.signal(signal.SIGINT, quit_handler)
     
     # Create payloadsdk object
-    my_payload = PayloadSdkInterface(s_conn)
+    my_payload = PayloadSdkInterface()
 
     # Init payload
     my_payload.sdkInitConnection()

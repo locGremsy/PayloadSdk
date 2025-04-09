@@ -5,7 +5,6 @@ from io import BytesIO
 import sys
 from typing import List
 
-
 href_elements: List[str] = []
 listed = False
 download_directory = ""

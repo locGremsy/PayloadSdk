@@ -2,8 +2,8 @@ import ctypes
 import time
 from enum import Enum
 from typing import Callable
-from ..libs.payload_define import *
-from ..libs.mavlink_define import *
+from .payload_define import *
+from .mavlink_define import *
 
 # Payload type
 PAYLOAD_TYPE = "VIO"
@@ -327,47 +327,3 @@ class PayloadSdkInterface:
 
     def __del__(self):
         self.lib.PayloadSdkInterface_delete(self.obj)
-
-# Configuration for connection
-s_conn = T_ConnInfoStruct()
-s_conn.type = CONTROL_UDP
-s_conn.udp.ip = b"192.168.12.248"
-s_conn.udp.port = 14566
-
-# Example usage
-if __name__ == "__main__":
-
-    # Create payloadsdk object
-    payload = PayloadSdkInterface(s_conn)
-
-    # Init payload
-    payload.sdkInitConnection()
-
-    # Check connection
-    payload.checkPayloadConnection()
-
-    # Set gimbal RC mode to STANDARD
-    print("Set gimbal RC mode")
-    payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
-    time.sleep(0.1)  
-
-    # Move gimbal yaw to the right 20 deg/s
-    print("Move gimbal yaw to the right 20 deg/s, delay in 5secs")
-    payload.setGimbalSpeed(0, 0, 20, input_mode_t.INPUT_SPEED.value)
-    time.sleep(5) 
-
-    # Move gimbal yaw to the left 20 deg/s
-    print("Move gimbal yaw to the left 20 deg/s, delay in 5secs")
-    payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED.value)
-    time.sleep(5) 
-
-    # Stop gimbal movement
-    print("Keep gimbal stop, delay in 5secs")
-    payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED.value)
-    time.sleep(0.5)
-
-    # Close payload interface
-    try:
-        payload.sdkQuit()
-    except Exception as e:
-        print(f"Error while quitting payload: {e}")

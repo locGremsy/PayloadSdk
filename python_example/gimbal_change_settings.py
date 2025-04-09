@@ -1,9 +1,13 @@
 import time
 import signal
 import sys
-from ..libs.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
-from ..libs.payload_define import *
-from ..libs.mavlink_define import *
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from libs_python.payload_sdk import PayloadSdkInterface, T_ConnInfoStruct, payload_status_event_t, CONTROL_UDP
+from libs_python.payload_define import *
+from libs_python.mavlink_define import *
 
 # Configuration for connection
 s_conn = T_ConnInfoStruct()
