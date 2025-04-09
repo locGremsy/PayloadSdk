@@ -89,13 +89,13 @@ echo "Updating udp_ip_target and udp_port_target in $PAYLOADSDK_H_FILE..."
 
 if [ -f "$PAYLOADSDK_H_FILE" ]; then
     # Escape IP for sed (dùng nếu bạn cần dùng trong biểu thức regex)
-    ESCAPED_IP=$(echo "$IP_ADDRESS" | sed 's/\./\\./g')
+    ESCAPED_IP=$(echo "$IP_ADDRESS" | sudo sed 's/\./\\./g')
 
     # Chỉ thay phần IP trong chuỗi
-    sed -i -E "s/(static char \*udp_ip_target = \(char\*\)\")([^\"]+)(\";)/\1$IP_ADDRESS\3/" "$PAYLOADSDK_H_FILE"
+    sudo sed -i -E "s/(static char \*udp_ip_target = \(char\*\)\")([^\"]+)(\";)/\1$IP_ADDRESS\3/" "$PAYLOADSDK_H_FILE"
 
     # Chỉ thay phần số Port
-    sed -i -E "s/(static int udp_port_target = )([0-9]+)(;)/\1$PORT\3/" "$PAYLOADSDK_H_FILE"
+    sudo sed -i -E "s/(static int udp_port_target = )([0-9]+)(;)/\1$PORT\3/" "$PAYLOADSDK_H_FILE"
 
     echo "Updated udp_ip_target to $IP_ADDRESS and udp_port_target to $PORT in payloadsdk.h"
 else
@@ -103,16 +103,24 @@ else
 fi
 
 echo "----------------------------------------------------------------------------------------------------------------------"
-# Move payload_sdk.py, payload_define.py, mavlink_define.py, and __init__.py to PayloadSdk/libs
-echo "Checking and moving Python files to $LIBS_PYTHON_DIR..."
-mkdir $LIBS_PYTHON_DIR
 
-# Check and create libs_python directory only if it doesn't exist
+echo "Checking and moving Python files to $LIBS_PYTHON_DIR..."
+
+# Tạo thư mục nếu chưa tồn tại
 if [ ! -d "$LIBS_PYTHON_DIR" ]; then
     echo "Creating $LIBS_PYTHON_DIR directory..."
     mkdir -p "$LIBS_PYTHON_DIR"
+    echo "Setting ownership to current user..."
+    chown "$USER":"$(id -gn)" "$LIBS_PYTHON_DIR"
 else
     echo "$LIBS_PYTHON_DIR already exists."
+
+    # Nếu thư mục tồn tại nhưng do root sở hữu → cần đổi lại quyền
+    OWNER=$(stat -c '%U' "$LIBS_PYTHON_DIR")
+    if [ "$OWNER" = "root" ]; then
+        echo "Changing ownership from root to $USER..."
+        sudo chown "$USER":"$(id -gn)" "$LIBS_PYTHON_DIR"
+    fi
 fi
 
 # Move payload_sdk.py if it exists
@@ -139,6 +147,7 @@ else
     echo "Missing file: $MAVLINK_DEFINE_FILE"
 fi
 
+echo "----------------------------------------------------------------------------------------------------------------------"
 # # Move python_example directory to PayloadSdk
 # echo "Checking and moving $PYTHON_EXAMPLE_DIR to $PAYLOAD_SDK_DIR..."
 # if [ -d "$PYTHON_EXAMPLE_DIR" ] && [ -d "$PAYLOAD_SDK_DIR" ] && [ ! -d "$PAYLOAD_SDK_DIR/python_example" ]; then
@@ -157,6 +166,7 @@ fi
 #     echo "Skipping $WRAPPER_FILE (either not found or already moved)"
 # fi
 
+echo "----------------------------------------------------------------------------------------------------------------------"
 # # Comment out examples and tests subdirectories in PayloadSdk/CMakeLists.txt
 # echo "Updating $PAYLOAD_CMAKELISTS_FILE to comment out examples and tests subdirectories..."
 # if [ -f "$PAYLOAD_CMAKELISTS_FILE" ]; then
@@ -173,6 +183,7 @@ fi
 #     echo "Error: $PAYLOAD_CMAKELISTS_FILE does not exist, skipping update."
 # fi
 
+echo "----------------------------------------------------------------------------------------------------------------------"
 # # Ensure wrapper.cpp is not already in SOURCES block
 # echo "Checking and updating $CMAKELISTS_FILE for wrapper.cpp in SOURCES..."
 # if ! grep -q "wrapper.cpp" "$CMAKELISTS_FILE"; then
@@ -183,6 +194,7 @@ fi
 #     echo "Skipping wrapper.cpp addition (already present in SOURCES)"
 # fi
 
+echo "----------------------------------------------------------------------------------------------------------------------"
 # # Change STATIC to SHARED in add_library if not already changed
 # echo "Checking and updating $CMAKELISTS_FILE for SHARED library..."
 # if grep -q "add_library(\${PROJECT_NAME} STATIC" "$CMAKELISTS_FILE"; then
@@ -192,6 +204,7 @@ fi
 #     echo "Skipping STATIC to SHARED change (already set to SHARED or not applicable)"
 # fi
 
+echo "----------------------------------------------------------------------------------------------------------------------"
 # # Add the set_target_properties block at the end if it doesn't exist
 # echo "Checking and adding set_target_properties to $CMAKELISTS_FILE..."
 # if ! grep -q "set_target_properties(\${PROJECT_NAME} PROPERTIES" "$CMAKELISTS_FILE"; then
@@ -215,7 +228,7 @@ cd "$PAYLOAD_SDK_DIR"
 # Kiểm tra thư mục build
 if [ ! -d "build" ]; then
     echo "Creating build directory..."
-    mkdir build
+    sudo mkdir build
 else
     echo "Build directory already exists."
 fi
@@ -225,8 +238,8 @@ cd build
 # Xóa cache cmake cũ nếu có
 if [ -f "CMakeCache.txt" ]; then
     echo "Removing old CMakeCache.txt..."
-    rm CMakeCache.txt
-    rm -rf CMakeFiles
+    sudo rm CMakeCache.txt
+    sudo rm -rf CMakeFiles
 fi
 
 # Chạy cmake dựa trên PAYLOAD_TYPE
@@ -242,7 +255,7 @@ case "$PAYLOAD_TYPE" in
         ;;
 esac
 
-# make -j6
+# sudo make -j6
 
 echo "Build complete."
 echo "Modifications and build complete."
