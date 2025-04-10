@@ -1,7 +1,5 @@
 import requests
 import re
-import pycurl
-from io import BytesIO
 import sys
 from typing import List
 
@@ -73,21 +71,27 @@ def download_file(url: str, file_name: str) -> None:
     else:
         full_path = local_file_name
 
-    print(local_file_name)
+    print(f"Starting download from: {download_url}")
+    print(f"Saving to: {full_path}")
 
-    buffer = BytesIO()
     try:
+        response = requests.get(download_url, stream=True)
+        response.raise_for_status()
+
+        total_size = int(response.headers.get('content-length', 0))
+        downloaded_size = 0
+
         with open(full_path, 'wb') as f:
-            curl = pycurl.Curl()
-            curl.setopt(curl.URL, download_url)
-            curl.setopt(curl.WRITEDATA, f)
-            curl.setopt(curl.VERBOSE, True)
-            curl.setopt(curl.FOLLOWLOCATION, True)
-            curl.perform()
-            curl.close()
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded_size += len(chunk)
+                    print(f"\rDownloading... {downloaded_size}/{total_size} bytes", end='')
+
+        print(f"\nDownload completed: {local_file_name}")
 
     except Exception as e:
-        print(f"Request failed: {e}")
+        print(f"Download failed: {e}")
 
 # Main function to handle user interaction and media file downloads
 def main():

@@ -72,7 +72,7 @@ def main():
     
     # Set view source to EO/IR
     print("Set view source to EO/IR!")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IREO.value, param_type.PARAM_TYPE_UINT32.value) 
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EOIR.value, param_type.PARAM_TYPE_UINT32.value) 
 
     # Change EO zoom mode to Super Resolution
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, Payload_Camera_Video_Zoom_Mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION.value, param_type.PARAM_TYPE_UINT32.value) 
@@ -97,7 +97,7 @@ def main():
         
         # Zoom IR to 4x
         print("zoom IR to 4x")
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_8X.value, param_type.PARAM_TYPE_UINT32.value) 
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_4X.value, param_type.PARAM_TYPE_UINT32.value) 
         time.sleep(3)  
         
         # Short delay to prevent high CPU usage

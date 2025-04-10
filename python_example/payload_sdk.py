@@ -108,14 +108,19 @@ PAYLOAD_STREAMINFO_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_ch
 class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
 
-        # Load the shared library
-        self.lib = ctypes.CDLL("/home/onion/Desktop/payloadsdk_python/PayloadSdk/build/libs/libPayloadSDK.so")
-        
+        # Load the shared library with error handling
+        try:
+            self.lib = ctypes.CDLL("/home/onion/Desktop/payloadsdk_python/PayloadSdk/build/libs/libPayloadSDK.so")
+        except OSError as e:
+            print(f"Failed to load shared library: {e}")
+            exit(1)
+
         self._setup_function_prototypes()
         
         if conn_info is None:
             self.obj = self.lib.PayloadSdkInterface_new_default()
         else:
+            # self.obj = self.lib.PayloadSdkInterface_new(conn_info)
             self.obj = self.lib.PayloadSdkInterface_new(ctypes.byref(conn_info))
         
         self._param_callback = None
@@ -130,8 +135,8 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_regPayloadStreamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STREAMINFO_CALLBACK_T]
 
         # Core functions
-        # self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
         self.lib.PayloadSdkInterface_new.argtypes = [ctypes.POINTER(T_ConnInfoStruct)]
+        # self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
         self.lib.PayloadSdkInterface_new.restype = ctypes.c_void_p
         self.lib.PayloadSdkInterface_new_default.argtypes = []
         self.lib.PayloadSdkInterface_new_default.restype = ctypes.c_void_p
