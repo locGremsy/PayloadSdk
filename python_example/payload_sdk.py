@@ -1,5 +1,6 @@
 import ctypes
 import time
+import os
 from enum import Enum
 from typing import Callable
 from .payload_define import *
@@ -108,14 +109,14 @@ class PayloadSdkInterface:
     def __init__(self, conn_info: T_ConnInfoStruct = None):
 
         # Load the shared library
-        self.lib = ctypes.CDLL("../build/libs/libPayloadSDK.so")
+        self.lib = ctypes.CDLL("/home/onion/Desktop/payloadsdk_python/PayloadSdk/build/libs/libPayloadSDK.so")
         
         self._setup_function_prototypes()
         
         if conn_info is None:
             self.obj = self.lib.PayloadSdkInterface_new_default()
         else:
-            self.obj = self.lib.PayloadSdkInterface_new(conn_info)
+            self.obj = self.lib.PayloadSdkInterface_new(ctypes.byref(conn_info))
         
         self._param_callback = None
         self._status_callback = None
@@ -129,7 +130,8 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_regPayloadStreamChanged.argtypes = [ctypes.c_void_p, PAYLOAD_STREAMINFO_CALLBACK_T]
 
         # Core functions
-        self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
+        # self.lib.PayloadSdkInterface_new.argtypes = [T_ConnInfoStruct]
+        self.lib.PayloadSdkInterface_new.argtypes = [ctypes.POINTER(T_ConnInfoStruct)]
         self.lib.PayloadSdkInterface_new.restype = ctypes.c_void_p
         self.lib.PayloadSdkInterface_new_default.argtypes = []
         self.lib.PayloadSdkInterface_new_default.restype = ctypes.c_void_p
