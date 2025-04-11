@@ -20,11 +20,11 @@ git clone --recurse-submodules -b develop ssh://git@gitlab.gremsy.vn:2224/ai/tay
 ```
 
 ## How to build and run example
-- Run script for update wrapper.cpp file to PayloadSDK libs
+- Run script for build project
 
 ```shell
-chmod +x update_payloadsdk.sh
-./update_payloadsdk.sh
+chmod +x cmd_build_payload.sh
+./cmd_build_payload.sh
 ```
 
 - Run example
