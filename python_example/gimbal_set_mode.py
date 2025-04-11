@@ -42,27 +42,27 @@ def main():
 
     # Set gimbal to LOCK mode
     print("Gimbal set LOCK mode, delay in 5 secs")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, Payload_Camera_Gimbal_Mode.PAYLOAD_CAMERA_GIMBAL_MODE_LOCK.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, payload_camera_gimbal_mode.PAYLOAD_CAMERA_GIMBAL_MODE_LOCK, param_type.PARAM_TYPE_UINT32)
     time.sleep(5) 
 
     # Set gimbal to FOLLOW mode
     print("Gimbal set FOLLOW mode, delay in 5 secs")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, Payload_Camera_Gimbal_Mode.PAYLOAD_CAMERA_GIMBAL_MODE_FOLLOW.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, payload_camera_gimbal_mode.PAYLOAD_CAMERA_GIMBAL_MODE_FOLLOW, param_type.PARAM_TYPE_UINT32)
     time.sleep(5)
 
     # Set gimbal to MAPPING mode
     print("Gimbal set MAPPING mode, delay in 5 secs")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, Payload_Camera_Gimbal_Mode.PAYLOAD_CAMERA_GIMBAL_MODE_MAPPING.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, payload_camera_gimbal_mode.PAYLOAD_CAMERA_GIMBAL_MODE_MAPPING, param_type.PARAM_TYPE_UINT32)
     time.sleep(5)
 
     # Set gimbal to OFF mode
     print("Gimbal set OFF mode, delay in 5 secs")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, Payload_Camera_Gimbal_Mode.PAYLOAD_CAMERA_GIMBAL_MODE_OFF.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, payload_camera_gimbal_mode.PAYLOAD_CAMERA_GIMBAL_MODE_OFF, param_type.PARAM_TYPE_UINT32)
     time.sleep(5)
 
     # Set gimbal to RESET mode
     print("Gimbal set RESET mode, delay in 5 secs")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, Payload_Camera_Gimbal_Mode.PAYLOAD_CAMERA_GIMBAL_MODE_RESET.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_GIMBAL_MODE, payload_camera_gimbal_mode.PAYLOAD_CAMERA_GIMBAL_MODE_RESET, param_type.PARAM_TYPE_UINT32)
     time.sleep(5)
 
     # Close payload interface

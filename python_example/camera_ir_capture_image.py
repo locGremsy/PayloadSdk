@@ -6,7 +6,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t
+from libs_python.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t, capture_sequence_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *        
 
@@ -14,16 +14,7 @@ my_payload = None
 image_to_capture = 3
 time_to_exit = False
 
-class capture_sequence_t(Enum):
-    IDLE = 0
-    CHECK_STORAGE = 1
-    CHECK_CAPTURE_STATUS = 2
-    CHECK_CAMERA_MODE = 3
-    CHANGE_CAMERA_MODE = 4
-    DO_CAPTURE = 5
-    WAIT_CAPTURE_DONE = 6
-
-my_capture = capture_sequence_t.CHECK_STORAGE.value
+my_capture = capture_sequence_t.CHECK_STORAGE
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
@@ -44,27 +35,27 @@ def quit_handler(sig, frame):
 def onPayloadStatusChanged(event: int, param: list):
     global my_capture, image_to_capture, time_to_exit
 
-    if event == payload_status_event_t.PAYLOAD_CAM_CAPTURE_STATUS.value:      
+    if event == payload_status_event_t.PAYLOAD_CAM_CAPTURE_STATUS:      
         # param[0]: image_status
 		# param[1]: video_status
 		# param[2]: image_count
 		# param[3]: recording_time_ms
         
-        if my_capture == capture_sequence_t.CHECK_CAPTURE_STATUS.value:
+        if my_capture == capture_sequence_t.CHECK_CAPTURE_STATUS:
             print(f"Got payload capture status: image_status: {param[0]:.2f}, video_status: {param[1]:.2f}")
 
             # If image status is idle, do capture
             if param[0] == 0:
-                my_capture = capture_sequence_t.CHECK_CAMERA_MODE.value
+                my_capture = capture_sequence_t.CHECK_CAMERA_MODE
                 print("   ---> Payload is idle, Check camera mode")
             else:
                 print("   ---> Payload is busy")
-                my_capture = capture_sequence_t.IDLE.value
+                my_capture = capture_sequence_t.IDLE
 
-        elif my_capture == capture_sequence_t.WAIT_CAPTURE_DONE.value:
+        elif my_capture == capture_sequence_t.WAIT_CAPTURE_DONE:
             if param[0] == 0:
                 image_to_capture -= 1
-                my_capture = capture_sequence_t.CHECK_STORAGE.value
+                my_capture = capture_sequence_t.CHECK_STORAGE
                 print(f"   ---> Payload is completed capture image, Do next sequence {image_to_capture}")
 
                 if image_to_capture == 0:
@@ -73,35 +64,35 @@ def onPayloadStatusChanged(event: int, param: list):
             else:
                 print("   ---> Payload is busy")
     
-    elif event == payload_status_event_t.PAYLOAD_CAM_STORAGE_INFO.value:
+    elif event == payload_status_event_t.PAYLOAD_CAM_STORAGE_INFO:
         # param[0]: total_capacity
 		# param[1]: used_capacity
 		# param[2]: available_capacity
 		# param[3]: status
         
-        if my_capture == capture_sequence_t.CHECK_STORAGE.value:
+        if my_capture == capture_sequence_t.CHECK_STORAGE:
             print(f"Got payload storage info: total: {param[0]:.2f} MB, used: {param[1]:.2f} MB, available: {param[2]:.2f} MB")
 
             # If payload have enough space, check capture status
             if param[2] >= 10.0:
-                my_capture = capture_sequence_t.CHECK_CAPTURE_STATUS.value
+                my_capture = capture_sequence_t.CHECK_CAPTURE_STATUS
                 print("   ---> Storage ready, check capture status")
             else:
-                my_capture = capture_sequence_t.IDLE.value
+                my_capture = capture_sequence_t.IDLE
                 print("   ---> Payload's storage is not ready")
     
-    elif event == payload_status_event_t.PAYLOAD_CAM_SETTINGS.value:
+    elif event == payload_status_event_t.PAYLOAD_CAM_SETTINGS:
         # param[0]: mode_id
 		# param[1]: zoomLevel
 		# param[2]: focusLevel
         
-        if my_capture == capture_sequence_t.CHECK_CAMERA_MODE.value:
+        if my_capture == capture_sequence_t.CHECK_CAMERA_MODE:
             print(f"Got camera mode: {param[0]:.2f}")
             if param[0] == 0:  
-                my_capture = capture_sequence_t.DO_CAPTURE.value
+                my_capture = capture_sequence_t.DO_CAPTURE
                 print("   ---> Payload in Image mode, do capture image")
             else:
-                my_capture = capture_sequence_t.CHANGE_CAMERA_MODE.value
+                my_capture = capture_sequence_t.CHANGE_CAMERA_MODE
                 print("   ---> Payload in Video mode, change camera mode")
 
 
@@ -125,33 +116,33 @@ def main():
     my_payload.checkPayloadConnection()
     
     # Set payload to IMAGE mode for testing
-    my_payload.setPayloadCameraMode(CAMERA_MODE.CAMERA_MODE_IMAGE.value)  
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RECORD_SRC, Payload_Camera_Record_Src.PAYLOAD_CAMERA_RECORD_IR.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraMode(camera_mode.CAMERA_MODE_IMAGE)  
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RECORD_SRC, payload_camera_record_src.PAYLOAD_CAMERA_RECORD_IR, param_type.PARAM_TYPE_UINT32)
 
     while not time_to_exit:
 
         # Capture IR image with payload following this sequence
-        if my_capture == capture_sequence_t.IDLE.value:
+        if my_capture == capture_sequence_t.IDLE:
             # Wait in idle state
             pass  
-        elif my_capture == capture_sequence_t.CHECK_STORAGE.value:
+        elif my_capture == capture_sequence_t.CHECK_STORAGE:
             my_payload.getPayloadStorage()
 
-        elif my_capture == capture_sequence_t.CHECK_CAPTURE_STATUS.value:
+        elif my_capture == capture_sequence_t.CHECK_CAPTURE_STATUS:
             my_payload.getPayloadCaptureStatus()
 
-        elif my_capture == capture_sequence_t.CHECK_CAMERA_MODE.value:
+        elif my_capture == capture_sequence_t.CHECK_CAMERA_MODE:
             my_payload.getPayloadCameraMode()
 
-        elif my_capture == capture_sequence_t.CHANGE_CAMERA_MODE.value:
-            my_payload.setPayloadCameraMode(CAMERA_MODE.CAMERA_MODE_IMAGE.value)  
-            my_capture = capture_sequence_t.CHECK_CAMERA_MODE.value
+        elif my_capture == capture_sequence_t.CHANGE_CAMERA_MODE:
+            my_payload.setPayloadCameraMode(camera_mode.CAMERA_MODE_IMAGE)  
+            my_capture = capture_sequence_t.CHECK_CAMERA_MODE
 
-        elif my_capture == capture_sequence_t.DO_CAPTURE.value:
+        elif my_capture == capture_sequence_t.DO_CAPTURE:
             my_payload.setPayloadCameraCaptureImage()
-            my_capture = capture_sequence_t.WAIT_CAPTURE_DONE.value   
+            my_capture = capture_sequence_t.WAIT_CAPTURE_DONE   
 
-        elif my_capture == capture_sequence_t.WAIT_CAPTURE_DONE.value:
+        elif my_capture == capture_sequence_t.WAIT_CAPTURE_DONE:
             my_payload.getPayloadCaptureStatus()
 
         time.sleep(0.3)  

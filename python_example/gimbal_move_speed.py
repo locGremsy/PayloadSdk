@@ -26,7 +26,7 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_GB_ATTITUDE.value:
+    if event == payload_status_event_t.PAYLOAD_GB_ATTITUDE:
         # param[0]: pitch
         # param[1]: roll
         # param[2]: yaw
@@ -55,22 +55,22 @@ def main():
 
     # Set gimbal RC mode to STANDARD 
     print("Set gimbal RC mode")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, payload_camera_rc_mode.PAYLOAD_CAMERA_RC_MODE_STANDARD, param_type.PARAM_TYPE_UINT32)
     time.sleep(0.1)  
 
     # Move gimbal yaw to the right 20 deg/s
     print("Move gimbal yaw to the right 20 deg/s, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, 20, input_mode_t.INPUT_SPEED.value)
+    my_payload.setGimbalSpeed(0, 0, 20, input_mode_t.INPUT_SPEED)
     time.sleep(5) 
 
     # Move gimbal yaw to the left 20 deg/s
     print("Move gimbal yaw to the left 20 deg/s, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED.value)
+    my_payload.setGimbalSpeed(0, 0, -20, input_mode_t.INPUT_SPEED)
     time.sleep(5) 
 
     # Stop gimbal movement
     print("Keep gimbal stop, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED.value)
+    my_payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_SPEED)
     time.sleep(0.5) 
 
     # Close payload interface

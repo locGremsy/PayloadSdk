@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, param_type
+from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, param_type, get_stream_sequence_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *
 
@@ -23,14 +23,7 @@ video_thread = None
 main_pipeline = None
 loop = None
 
-class get_stream_sequence_t(Enum):
-    IDLE = 0
-    CHECK_CAMERA_INFO = 1
-    CHECK_STREAMING_URI = 2
-    START_PIPELINE = 3
-    PIPELINE_RUNNING = 4
-
-my_job = get_stream_sequence_t.CHECK_CAMERA_INFO.value
+my_job = get_stream_sequence_t.CHECK_CAMERA_INFO
 time_to_view = 10
 
 # Signal handler for quitting
@@ -52,29 +45,29 @@ def quit_handler(sig, frame):
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
     global my_job
-    if event == payload_status_event_t.PAYLOAD_CAM_INFO.value:
-        if int(param[0]) & CAMERA_CAP_FLAGS.CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM.value:
+    if event == payload_status_event_t.PAYLOAD_CAM_INFO:
+        if int(param[0]) & camera_cap_flags.CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM:
             print("   ---> Got payload has streaming video, Check streaming URI")
-            my_job = get_stream_sequence_t.CHECK_STREAMING_URI.value
+            my_job = get_stream_sequence_t.CHECK_STREAMING_URI
         else:
             print("   ---> Payload has no streaming video")
             print("It looks like your video streaming setting was DISABLE Auto Connection")
             print("Please enter the Web server and switch Auto Connection to ENABLE. Then try again.")
-            my_job = get_stream_sequence_t.IDLE.value
+            my_job = get_stream_sequence_t.IDLE
 
 # Callback function for payload stream changes
 def onPayloadStreamChanged(event: int, param_char: str, param_double: list):
     global my_job, stream_uri, is_rtsp_stream
-    if event == payload_status_event_t.PAYLOAD_CAM_STREAMINFO.value:
+    if event == payload_status_event_t.PAYLOAD_CAM_STREAMINFO:
         print("   ---> Got streaming information:")
         print(f"   ---> Streaming type: {param_double[0]:.2f}")
         print(f"   ---> Streaming resolution_v: {param_double[1]:.2f}")
         print(f"   ---> Streaming resolution_h: {param_double[2]:.2f}")
         print(f"   ---> Streaming uri: {param_char}")
 
-        if my_job == get_stream_sequence_t.CHECK_STREAMING_URI.value:
-            my_job = get_stream_sequence_t.START_PIPELINE.value
-            is_rtsp_stream = (param_double[0] == VIDEO_STREAM_TYPE.VIDEO_STREAM_TYPE_RTSP.value)
+        if my_job == get_stream_sequence_t.CHECK_STREAMING_URI:
+            my_job = get_stream_sequence_t.START_PIPELINE
+            is_rtsp_stream = (param_double[0] == video_stream_type.VIDEO_STREAM_TYPE_RTSP)
             stream_uri = param_char
 
 def run_video_stream():
@@ -151,11 +144,11 @@ def main():
     my_payload.checkPayloadConnection()
 
     # Set view source to IR/EO
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IREO.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, payload_camera_view_src.PAYLOAD_CAMERA_VIEW_IREO, param_type.PARAM_TYPE_UINT32)
     time.sleep(0.5)
 
     while not time_to_exit:
-        if my_job == get_stream_sequence_t.IDLE.value:
+        if my_job == get_stream_sequence_t.IDLE:
             print("Program exit.")
             try:
                 my_payload.sdkQuit()
@@ -163,18 +156,18 @@ def main():
                 print(f"Error while quitting payload: {e}")
             sys.exit(0)
 
-        elif my_job == get_stream_sequence_t.CHECK_CAMERA_INFO.value:
+        elif my_job == get_stream_sequence_t.CHECK_CAMERA_INFO:
             print("Send request to read camera's information")
             my_payload.getPayloadCameraInformation()
 
-        elif my_job == get_stream_sequence_t.CHECK_STREAMING_URI.value:
+        elif my_job == get_stream_sequence_t.CHECK_STREAMING_URI:
             my_payload.getPayloadCameraStreamingInformation()
 
-        elif my_job == get_stream_sequence_t.START_PIPELINE.value:
+        elif my_job == get_stream_sequence_t.START_PIPELINE:
             gstreamer_start()
-            my_job = get_stream_sequence_t.PIPELINE_RUNNING.value
+            my_job = get_stream_sequence_t.PIPELINE_RUNNING
 
-        elif my_job == get_stream_sequence_t.PIPELINE_RUNNING.value:
+        elif my_job == get_stream_sequence_t.PIPELINE_RUNNING:
             while not time_to_exit:
                 time.sleep(1)
 

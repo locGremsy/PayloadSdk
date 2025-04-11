@@ -11,7 +11,7 @@ PAYLOAD_TYPE = "VIO"
 
 # Control types
 CONTROL_UDP = 1
-SDK_VERSION = "3.0.0_build.04022025"
+SDK_VERSION = "3.0.0_build.011042025"
 CAMERA_MODE_RECORD = 1  
 INPUT_MODE_RATE = 2    
 
@@ -35,12 +35,12 @@ class T_ConnInfoStruct(ctypes.Structure):
 
 # Param type enum
 class param_type(Enum):
-    PARAM_TYPE_UINT8 = 1
-    PARAM_TYPE_INT8 = 2
+    PARAM_TYPE_UINT8  = 1
+    PARAM_TYPE_INT8   = 2
     PARAM_TYPE_UINT16 = 3
-    PARAM_TYPE_INT16 = 4
+    PARAM_TYPE_INT16  = 4
     PARAM_TYPE_UINT32 = 5
-    PARAM_TYPE_INT32 = 6
+    PARAM_TYPE_INT32  = 6
     PARAM_TYPE_UINT64 = 7
     PARAM_TYPE_INT64  = 8
     PARAM_TYPE_REAL32 = 9
@@ -49,45 +49,45 @@ class param_type(Enum):
 # Payload status event enum
 class payload_status_event_t(Enum):
     PAYLOAD_CAM_CAPTURE_STATUS = 0
-    PAYLOAD_CAM_STORAGE_INFO = 1
-    PAYLOAD_CAM_SETTINGS = 2
-    PAYLOAD_CAM_PARAMS = 3
-    PAYLOAD_GB_ATTITUDE = 4
-    PAYLOAD_GB_PARAMS = 5
-    PAYLOAD_ACK = 6
-    PAYLOAD_CAM_INFO  = 7
-    PAYLOAD_CAM_STREAMINFO = 8
-    PAYLOAD_PARAMS = 9
-    PAYLOAD_PARAM_EXT_ACK = 10
+    PAYLOAD_CAM_STORAGE_INFO   = 1
+    PAYLOAD_CAM_SETTINGS       = 2
+    PAYLOAD_CAM_PARAMS         = 3
+    PAYLOAD_GB_ATTITUDE        = 4
+    PAYLOAD_GB_PARAMS          = 5
+    PAYLOAD_ACK                = 6
+    PAYLOAD_CAM_INFO           = 7
+    PAYLOAD_CAM_STREAMINFO     = 8
+    PAYLOAD_PARAMS             = 9
+    PAYLOAD_PARAM_EXT_ACK      = 10
 
 # Payload param enum
 class payload_param_t(Enum):
-    PARAM_EO_ZOOM_LEVEL = 0
-    PARAM_IR_ZOOM_LEVEL = 1
-    PARAM_LRF_RANGE = 2
-    PARAM_TRACK_POS_X = 3
-    PARAM_TRACK_POS_Y = 4
-    PARAM_TRACK_POS_W = 5
-    PARAM_TRACK_POS_H = 6
-    PARAM_TRACK_STATUS = 7
-    PARAM_LRF_OFSET_X = 8
-    PARAM_LRF_OFSET_Y = 9
-    PARAM_TARGET_COOR_LON = 10
-    PARAM_TARGET_COOR_LAT = 11
-    PARAM_TARGET_COOR_ALT = 12
-    PARAM_PAYLOAD_GPS_LON = 13
-    PARAM_PAYLOAD_GPS_LAT = 14
-    PARAM_PAYLOAD_GPS_ALT = 15
+    PARAM_EO_ZOOM_LEVEL     = 0
+    PARAM_IR_ZOOM_LEVEL     = 1
+    PARAM_LRF_RANGE         = 2
+    PARAM_TRACK_POS_X       = 3
+    PARAM_TRACK_POS_Y       = 4
+    PARAM_TRACK_POS_W       = 5
+    PARAM_TRACK_POS_H       = 6
+    PARAM_TRACK_STATUS      = 7
+    PARAM_LRF_OFSET_X       = 8
+    PARAM_LRF_OFSET_Y       = 9
+    PARAM_TARGET_COOR_LON   = 10
+    PARAM_TARGET_COOR_LAT   = 11
+    PARAM_TARGET_COOR_ALT   = 12
+    PARAM_PAYLOAD_GPS_LON   = 13
+    PARAM_PAYLOAD_GPS_LAT   = 14
+    PARAM_PAYLOAD_GPS_ALT   = 15
     PARAM_PAYLOAD_APP_VER_X = 16
     PARAM_PAYLOAD_APP_VER_Y = 17
     PARAM_PAYLOAD_APP_VER_Z = 18
-    PARAM_CAM_VIEW_MODE = 19
-    PARAM_CAM_REC_SOURCE = 20
-    PARAM_CAM_IR_TYPE = 21
+    PARAM_CAM_VIEW_MODE     = 19
+    PARAM_CAM_REC_SOURCE    = 20
+    PARAM_CAM_IR_TYPE       = 21
     PARAM_CAM_IR_PALETTE_ID = 22
-    PARAM_CAM_IR_FFC_MODE = 23
-    PARAM_GIMBAL_MODE = 24
-    PARAM_COUNT = 25
+    PARAM_CAM_IR_FFC_MODE   = 23
+    PARAM_GIMBAL_MODE       = 24
+    PARAM_COUNT             = 25
 
 # Input mode enum
 class input_mode_t(Enum):
@@ -97,8 +97,40 @@ class input_mode_t(Enum):
 # FFC mode enum
 class ffc_mode_t(Enum):
     FFC_MODE_MANUAL = 0
-    FFC_MODE_AUTO = 1
-    FFC_MODE_END = 2
+    FFC_MODE_AUTO   = 1
+    FFC_MODE_END    = 2
+
+# Capture sequence enum
+class capture_sequence_t(Enum):
+    IDLE                 = 0
+    CHECK_STORAGE        = 1
+    CHECK_CAPTURE_STATUS = 2
+    CHECK_CAMERA_MODE    = 3
+    CHANGE_CAMERA_MODE   = 4
+    DO_CAPTURE           = 5
+    WAIT_CAPTURE_DONE    = 6
+
+# Calib type enum
+class calib_type_t(Enum):
+    CALIB_GYRO  = 0
+    CALIB_ACCEL = 1
+    AUTO_TUNE   = 2
+    CALIB_MOTOR = 3
+    SEARCH_HOME = 4
+
+# Tracking cmd enum
+class tracking_cmd_t(Enum):
+    TRACK_IDLE = 0
+    TRACK_ACT  = 1
+    TRACK_LOST = 2
+
+# Stream sequence enum
+class get_stream_sequence_t(Enum):
+    IDLE                = 0
+    CHECK_CAMERA_INFO   = 1
+    CHECK_STREAMING_URI = 2
+    START_PIPELINE      = 3
+    PIPELINE_RUNNING    = 4
 
 # Callback types
 PAYLOAD_PARAM_CALLBACK_T = ctypes.CFUNCTYPE(None, ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_double))
@@ -182,14 +214,14 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_setPayloadCameraFFCMode.argtypes = [ctypes.c_void_p]
 
         # GPS and system time functions
-        self.lib.PayloadSdkInterface_sendPayloadGPSPosition.argtypes = [ctypes.c_void_p, MavlinkGlobalPositionInt]
-        self.lib.PayloadSdkInterface_sendPayloadSystemTime.argtypes = [ctypes.c_void_p, MavlinkSystemTime]
+        self.lib.PayloadSdkInterface_sendPayloadGPSPosition.argtypes = [ctypes.c_void_p, mavlink_global_position_int_t]
+        self.lib.PayloadSdkInterface_sendPayloadSystemTime.argtypes = [ctypes.c_void_p, mavlink_system_time_t]
         
         # Tracking functions
         self.lib.PayloadSdkInterface_setPayloadObjectTrackingParams.argtypes = [ctypes.c_void_p, ctypes.c_float, ctypes.c_float, ctypes.c_float]
 
         # GetNewMessage function
-        self.lib.PayloadSdkInterface_getNewMessage.argtypes = [ctypes.c_void_p, ctypes.POINTER(MavlinkMessageT)]
+        self.lib.PayloadSdkInterface_getNewMessage.argtypes = [ctypes.c_void_p, ctypes.POINTER(mavlink_message_t)]
         self.lib.PayloadSdkInterface_getNewMessage.restype = ctypes.c_uint8
 
     
@@ -322,8 +354,8 @@ class PayloadSdkInterface:
 
     # Get new message method
     def getNewMessage(self):
-        msg = MavlinkMessageT()
-        print("receive_messages", f"Size of MavlinkMessageT: {ctypes.sizeof(MavlinkMessageT)}")
+        msg = mavlink_message_t()
+        print("receive_messages", f"Size of mavlink_message_t: {ctypes.sizeof(mavlink_message_t)}")
         msg_cnt = self.lib.PayloadSdkInterface_getNewMessage(self.obj, ctypes.pointer(msg))
         return msg_cnt, msg
     

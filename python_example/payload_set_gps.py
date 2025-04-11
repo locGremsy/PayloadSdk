@@ -5,7 +5,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, MavlinkGlobalPositionInt
+from libs_python.payload_sdk import PayloadSdkInterface, mavlink_global_position_int_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *
 
@@ -47,7 +47,7 @@ def main():
     while True:
 
         # Create GPS data
-        gps = MavlinkGlobalPositionInt()
+        gps = mavlink_global_position_int_t()
         gps.time_boot_ms = boot_time_ms
         boot_time_ms += 100               # Need to add boot_time_ms of your system here
         gps.lat = int(40.730610 * 1e7)    # The location of New York City

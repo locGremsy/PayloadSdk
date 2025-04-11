@@ -29,67 +29,67 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_GB_ATTITUDE.value:
+    if event == payload_status_event_t.PAYLOAD_GB_ATTITUDE:
         # param[0]: pitch
         # param[1]: roll
         # param[2]: yaw
 
         print(f"Pitch: {param[0]:.2f} - Roll: {param[1]:.2f} - Yaw: {param[2]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAMS.value:
+    elif event == payload_status_event_t.PAYLOAD_PARAMS:
         # param[0]: param index
         # param[1]: value
 
-        if param[0] == payload_param_t.PARAM_EO_ZOOM_LEVEL.value:
+        if param[0] == payload_param_t.PARAM_EO_ZOOM_LEVEL:
             print(f"Payload EO_ZOOM_LEVEL: {param[1]:.2f}")
 
-        elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL.value:
+        elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL:
             print(f"Payload IR_ZOOM_LEVEL: {param[1]:.2f}")
 
         elif PAYLOAD_TYPE == "VIO":
-            if param[0] == payload_param_t.PARAM_LRF_RANGE.value:
+            if param[0] == payload_param_t.PARAM_LRF_RANGE:
                 print(f"Payload LRF_RANGE: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_LRF_OFSET_X.value:
+            elif param[0] == payload_param_t.PARAM_LRF_OFSET_X:
                 print(f"Payload PARAM_LRF_OFSET_X: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_LRF_OFSET_Y.value:
+            elif param[0] == payload_param_t.PARAM_LRF_OFSET_Y:
                 print(f"Payload PARAM_LRF_OFSET_Y: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LON.value:
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LON:
                 print(f"Payload PARAM_TARGET_COOR_LON: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LAT.value:
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_LAT:
                 print(f"Payload PARAM_TARGET_COOR_LAT: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_TARGET_COOR_ALT.value:
+            elif param[0] == payload_param_t.PARAM_TARGET_COOR_ALT:
                 print(f"Payload PARAM_TARGET_COOR_ALT: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_CAM_VIEW_MODE.value:
+            elif param[0] == payload_param_t.PARAM_CAM_VIEW_MODE:
                 print(f"Payload PARAM_CAM_VIEW_MODE: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_CAM_REC_SOURCE.value:
+            elif param[0] == payload_param_t.PARAM_CAM_REC_SOURCE:
                 print(f"Payload PARAM_CAM_REC_SOURCE: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_CAM_IR_TYPE.value:
+            elif param[0] == payload_param_t.PARAM_CAM_IR_TYPE:
                 print(f"Payload PARAM_CAM_IR_TYPE: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_CAM_IR_PALETTE_ID.value:
+            elif param[0] == payload_param_t.PARAM_CAM_IR_PALETTE_ID:
                 print(f"Payload PARAM_CAM_IR_PALETTE_ID: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_GIMBAL_MODE.value:
+            elif param[0] == payload_param_t.PARAM_GIMBAL_MODE:
                 print(f"Payload PARAM_GIMBAL_MODE: {param[1]:.2f}")
 
-            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LON.value:
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LON:
                 print(f"Payload PARAM_PAYLOAD_GPS_LON: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LAT.value:
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_LAT:
                 print(f"Payload PARAM_PAYLOAD_GPS_LAT: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_ALT.value:
+            elif param[0] == payload_param_t.PARAM_PAYLOAD_GPS_ALT:
                 print(f"Payload PARAM_PAYLOAD_GPS_ALT: {param[1]:.6f}")
 
-            elif param[0] == payload_param_t.PARAM_CAM_IR_FFC_MODE.value:
+            elif param[0] == payload_param_t.PARAM_CAM_IR_FFC_MODE:
                 print(f"Payload PARAM_CAM_IR_FFC_MODE: {param[1]:.2f}")
 
 def main():
@@ -111,29 +111,29 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
 
-    my_payload.setParamRate(payload_param_t.PARAM_EO_ZOOM_LEVEL.value, 1000)
-    my_payload.setParamRate(payload_param_t.PARAM_IR_ZOOM_LEVEL.value, 1000)
+    my_payload.setParamRate(payload_param_t.PARAM_EO_ZOOM_LEVEL, 1000)
+    my_payload.setParamRate(payload_param_t.PARAM_IR_ZOOM_LEVEL, 1000)
 
     if PAYLOAD_TYPE == "VIO":
-        my_payload.setParamRate(payload_param_t.PARAM_LRF_RANGE.value, 100)
-        my_payload.setParamRate(payload_param_t.PARAM_LRF_OFSET_X.value, 100)
-        my_payload.setParamRate(payload_param_t.PARAM_LRF_OFSET_Y.value, 100)
+        my_payload.setParamRate(payload_param_t.PARAM_LRF_RANGE, 100)
+        my_payload.setParamRate(payload_param_t.PARAM_LRF_OFSET_X, 100)
+        my_payload.setParamRate(payload_param_t.PARAM_LRF_OFSET_Y, 100)
 
-        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_LON.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_LAT.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_ALT.value, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_LON, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_LAT, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_TARGET_COOR_ALT, 1000)
 
-        my_payload.setParamRate(payload_param_t.PARAM_CAM_VIEW_MODE.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_CAM_REC_SOURCE.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_TYPE.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_PALETTE_ID.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_GIMBAL_MODE.value, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_CAM_VIEW_MODE, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_CAM_REC_SOURCE, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_TYPE, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_PALETTE_ID, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_GIMBAL_MODE, 1000)
 
-        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_LON.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_LAT.value, 1000)
-        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_ALT.value, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_LON, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_LAT, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_PAYLOAD_GPS_ALT, 1000)
 
-        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_FFC_MODE.value, 1000)
+        my_payload.setParamRate(payload_param_t.PARAM_CAM_IR_FFC_MODE, 1000)
 
     while not time_to_exit:
         time.sleep(0.01) 

@@ -6,7 +6,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t
+from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, calib_type_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *
 
@@ -17,20 +17,13 @@ MAV_CMD_USER_3 = 300
 MAV_RESULT_ACCEPTED = 0
 MAV_RESULT_IN_PROGRESS = 5
 
-class calib_type_t(Enum):
-    CALIB_GYRO = 0
-    CALIB_ACCEL = 1
-    AUTO_TUNE = 2
-    CALIB_MOTOR = 3
-    SEARCH_HOME = 4
-
 my_payload = None
 is_calibration_running = False
 is_exit = False
 start_time = time.time() * 1000000 
 
 # Set the calibration type
-my_calib = calib_type_t.CALIB_GYRO.value
+my_calib = calib_type_t.CALIB_GYRO
 
 # SDK log function
 def sdk_log(func_name, message):
@@ -56,12 +49,12 @@ def quit_handler(sig, frame):
 def on_payload_status_changed(event: int, param: list):
     global is_calibration_running, is_exit
     
-    if event == payload_status_event_t.PAYLOAD_ACK.value:
+    if event == payload_status_event_t.PAYLOAD_ACK:
 
         cmd_id, result, progress = param[0], param[1], param[2]
         # sdk_log("onPayloadStatusChanged", f"Got ack from {cmd_id:.0f}, result {result:.0f}, progress: {progress:.0f}")
 
-        if my_calib == calib_type_t.CALIB_GYRO.value:
+        if my_calib == calib_type_t.CALIB_GYRO:
             if cmd_id == MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION:
 
                 if result == MAV_RESULT_ACCEPTED:
@@ -75,7 +68,7 @@ def on_payload_status_changed(event: int, param: list):
                     is_calibration_running = True
                     sdk_log("onPayloadStatusChanged", "The gyro calibration is processing...")
 
-        elif my_calib == calib_type_t.CALIB_ACCEL.value:
+        elif my_calib == calib_type_t.CALIB_ACCEL:
             if cmd_id == MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION:
 
                 if result == MAV_RESULT_ACCEPTED:
@@ -89,7 +82,7 @@ def on_payload_status_changed(event: int, param: list):
                     is_calibration_running = True
                     sdk_log("onPayloadStatusChanged", "The accel calibration is processing...")
 
-        elif my_calib == calib_type_t.CALIB_MOTOR.value:
+        elif my_calib == calib_type_t.CALIB_MOTOR:
             if cmd_id == MAV_CMD_DO_SET_HOME:
 
                 if result == MAV_RESULT_ACCEPTED:
@@ -104,7 +97,7 @@ def on_payload_status_changed(event: int, param: list):
                     is_calibration_running = True
                     sdk_log("onPayloadStatusChanged", "The motor calibration is processing...")
 
-        elif my_calib == calib_type_t.AUTO_TUNE.value:
+        elif my_calib == calib_type_t.AUTO_TUNE:
             if cmd_id == MAV_CMD_USER_3:
 
                 if result == MAV_RESULT_ACCEPTED:
@@ -120,7 +113,7 @@ def on_payload_status_changed(event: int, param: list):
                     is_calibration_running = True
                     sdk_log("onPayloadStatusChanged", "The Auto tune is processing...")
 
-        elif my_calib == calib_type_t.SEARCH_HOME.value:
+        elif my_calib == calib_type_t.SEARCH_HOME:
             if cmd_id == MAV_CMD_DO_SET_HOME:
 
                 if result == MAV_RESULT_ACCEPTED:
@@ -137,10 +130,10 @@ def on_payload_status_changed(event: int, param: list):
 
 # Callback function for payload param changes
 def on_payload_param_changed(event: int, param_char: str, param: list):
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS.value:
+    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         sdk_log("onPayloadParamChanged", f"--> Payload_param: {param_char}, value: {param[1]:.2f}")
     
-    elif event == payload_status_event_t.PAYLOAD_GB_PARAMS.value:
+    elif event == payload_status_event_t.PAYLOAD_GB_PARAMS:
         sdk_log("onPayloadParamChanged", f"--> Gimbal_param: index: {param[0]:.0f}, id: {param_char}, value: {param[1]:.0f}")
 
 def main():
@@ -162,27 +155,27 @@ def main():
     # Check connection
     my_payload.checkPayloadConnection()
 
-    if my_calib == calib_type_t.CALIB_GYRO.value:
+    if my_calib == calib_type_t.CALIB_GYRO:
         is_calibration_running = False
         my_payload.sendPayloadGimbalCalibGyro()
         sdk_log("main", "Calib gyro command was sent. Waiting for the calibration done...")
 
-    elif my_calib == calib_type_t.CALIB_ACCEL.value:
+    elif my_calib == calib_type_t.CALIB_ACCEL:
         is_calibration_running = False
         my_payload.sendPayloadGimbalCalibAccel()
         sdk_log("main", "Calib accel command was sent. Waiting for the calibration done...")
 
-    elif my_calib == calib_type_t.CALIB_MOTOR.value:
+    elif my_calib == calib_type_t.CALIB_MOTOR:
         is_calibration_running = False
         my_payload.sendPayloadGimbalCalibMotor()
         sdk_log("main", "Calib motor command was sent. Waiting for the calibration done...")
 
-    elif my_calib == calib_type_t.AUTO_TUNE.value:
+    elif my_calib == calib_type_t.AUTO_TUNE:
         is_calibration_running = False
         my_payload.sendPayloadGimbalAutoTune(True)
         sdk_log("main", "Auto tune command was sent. Waiting for the process done...")
 
-    elif my_calib == calib_type_t.SEARCH_HOME.value:
+    elif my_calib == calib_type_t.SEARCH_HOME:
         is_calibration_running = False
         my_payload.sendPayloadGimbalSearchHome()
         sdk_log("main", "Searching Home command was sent. Waiting for the calibration done...")
@@ -192,19 +185,19 @@ def main():
         time.sleep(1)  
 
     # Load parameters to verify calibration
-    if my_calib == calib_type_t.CALIB_GYRO.value:
+    if my_calib == calib_type_t.CALIB_GYRO:
         sdk_log("main", "Load the Gyro offset values...")
         my_payload.getPayloadGimbalSettingByID("GYROX_OFFSET")
         my_payload.getPayloadGimbalSettingByID("GYROY_OFFSET")
         my_payload.getPayloadGimbalSettingByID("GYROZ_OFFSET")
 
-    elif my_calib == calib_type_t.CALIB_ACCEL.value:
+    elif my_calib == calib_type_t.CALIB_ACCEL:
         sdk_log("main", "Load the accel offset values...")
         my_payload.getPayloadGimbalSettingByID("ACCELX_OFFSET")
         my_payload.getPayloadGimbalSettingByID("ACCELY_OFFSET")
         my_payload.getPayloadGimbalSettingByID("ACCELZ_OFFSET")
 
-    elif my_calib == calib_type_t.AUTO_TUNE.value:
+    elif my_calib == calib_type_t.AUTO_TUNE:
         sdk_log("main", "Waiting for the gimbal rebooted...20s")
         time.sleep(20) 
         sdk_log("main", "Load the Stiffness/Holdstrength values...")
@@ -215,10 +208,10 @@ def main():
         my_payload.getPayloadGimbalSettingByID("PWR_ROLL")
         my_payload.getPayloadGimbalSettingByID("PWR_PAN")
 
-    elif my_calib == calib_type_t.SEARCH_HOME.value:
+    elif my_calib == calib_type_t.SEARCH_HOME:
         pass
     
-    elif my_calib == calib_type_t.CALIB_MOTOR.value:
+    elif my_calib == calib_type_t.CALIB_MOTOR:
         pass
 
     time.sleep(1)  

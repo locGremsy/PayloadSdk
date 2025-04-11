@@ -27,7 +27,7 @@ def quit_handler(sig, frame):
 # Callback function for payload param changes
 def onPayloadParamChanged(event: int, param_char: str, param: list):
     
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS.value:
+    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         print(f" --> Param_id: {param_char}, value: {param[1]:.2f}")
@@ -52,10 +52,10 @@ def main():
     my_payload.checkPayloadConnection()
     
     # Change setting of RC_MODE to STANDARD
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value) 
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, payload_camera_rc_mode.PAYLOAD_CAMERA_RC_MODE_STANDARD, param_type.PARAM_TYPE_UINT32) 
     
     # Change setting of OSD_MODE to STATUS to enable viewing of the zoom factor
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE , Payload_Camera_Osd_Mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_STATUS.value, param_type.PARAM_TYPE_UINT32.value)  
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE , payload_camera_osd_mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_STATUS, param_type.PARAM_TYPE_UINT32)  
     
     print("------------------------> Init values \n")
     # Request to read all settings of the payload and then check the RC_MODE setting
@@ -65,7 +65,7 @@ def main():
     print("\nChange some params\n")
     # Change zoom mode to SuperResolution
     if PAYLOAD_TYPE in ["VIO", "ZIO"]:
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, Payload_Camera_Video_Zoom_Mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION.value, param_type.PARAM_TYPE_UINT32.value) 
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, payload_camera_video_zoom_mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION, param_type.PARAM_TYPE_UINT32) 
         time.sleep(3)  
 
     # Request to read all settings of the payload to verify the changes

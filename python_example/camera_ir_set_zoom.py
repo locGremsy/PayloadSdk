@@ -26,7 +26,7 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_ACK.value:
+    if event == payload_status_event_t.PAYLOAD_ACK:
         print(f" --> Got ack, from command: {param[0]:.0f} - result: {param[1]:.2f}")
 
 def main():
@@ -50,57 +50,57 @@ def main():
 
     # Set view source to IR
     print("Set view source to IR!")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_IR.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, payload_camera_view_src.PAYLOAD_CAMERA_VIEW_IR, param_type.PARAM_TYPE_UINT32)
     time.sleep(1) 
 
     # Set initial IR zoom level
     print("Set zoom level to 1x!")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_1X.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, payload_camera_ir_zoom_factor.ZOOM_IR_1X, param_type.PARAM_TYPE_UINT32)
     time.sleep(3) 
 
     # Zoom step
     print("Zoom In 4 times!")
     for _ in range(4):
-        my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_STEP.value, Camera_Zoom_Value.ZOOM_IN.value)  # Zoom in
+        my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_STEP, camera_zoom_value.ZOOM_IN)  # Zoom in
         time.sleep(1)
 
     print("Zoom Out 2 times!")
     for _ in range(2):
-        my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_STEP.value, Camera_Zoom_Value.ZOOM_OUT.value)  # Zoom out
+        my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_STEP, camera_zoom_value.ZOOM_OUT)  # Zoom out
         time.sleep(1)
 
     # Zoom continuous
     print("Start Zoom In!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_CONTINUOUS.value, Camera_Zoom_Value.ZOOM_IN.value) # Zoom in
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_CONTINUOUS, camera_zoom_value.ZOOM_IN) # Zoom in
     time.sleep(5)  
 
     print("Stop Zoom!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_CONTINUOUS.value, Camera_Zoom_Value.ZOOM_STOP.value)  # Stop zoom
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_CONTINUOUS, camera_zoom_value.ZOOM_STOP)  # Stop zoom
     time.sleep(2)  
 
     print("Start Zoom Out!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_CONTINUOUS.value, Camera_Zoom_Value.ZOOM_OUT.value)  # Zoom out
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_CONTINUOUS, camera_zoom_value.ZOOM_OUT)  # Zoom out
     time.sleep(7)  
 
     print("Stop Zoom!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_CONTINUOUS.value, Camera_Zoom_Value.ZOOM_STOP.value)  # Stop zoom
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_CONTINUOUS, camera_zoom_value.ZOOM_STOP)  # Stop zoom
     time.sleep(2)
 
     # Zoom range
     print("Zoom Range 50%!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_RANGE.value, 50.0) # Zoom 50%
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_RANGE, 50.0) # Zoom 50%
     time.sleep(3) 
 
     print("Zoom Range 70%!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_RANGE.value, 70.0)  # Zoom 70%
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_RANGE, 70.0)  # Zoom 70%
     time.sleep(3)
 
     print("Zoom Range 100%!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_RANGE.value, 100.0) # Zoom 100%
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_RANGE, 100.0) # Zoom 100%
     time.sleep(3)
     
     print("Zoom Range 0%!")
-    my_payload.setCameraZoom(CAMERA_ZOOM_TYPE.ZOOM_TYPE_RANGE.value, 0.0) # Zoom 0%
+    my_payload.setCameraZoom(camera_zoom_type.ZOOM_TYPE_RANGE, 0.0) # Zoom 0%
     time.sleep(5)
     print("!--------------------!")
 

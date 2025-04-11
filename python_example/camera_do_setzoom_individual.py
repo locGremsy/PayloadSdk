@@ -30,20 +30,20 @@ def quit_handler(sig, frame):
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
 
-    if event == payload_status_event_t.PAYLOAD_ACK.value:
+    if event == payload_status_event_t.PAYLOAD_ACK:
         print(f" --> Got ack, from command: {param[0]:.0f} - result: {param[1]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK.value:
+    elif event == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK:
         print(f" --> Got ext_ack, result {param[0]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAMS.value:
+    elif event == payload_status_event_t.PAYLOAD_PARAMS:
         # param[0]: param index
 		# param[1]: value
 
-        if param[0] == payload_param_t.PARAM_EO_ZOOM_LEVEL.value:  
+        if param[0] == payload_param_t.PARAM_EO_ZOOM_LEVEL:  
             print(f"Payload EO_ZOOM_LEVEL: {param[1]:.2f}")
 
-        elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL.value:  
+        elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL:  
             print(f"Payload IR_ZOOM_LEVEL: {param[1]:.2f}")
 
 
@@ -67,37 +67,37 @@ def main():
     my_payload.checkPayloadConnection()
     
     # Register to receive zoom status updates
-    my_payload.setParamRate(payload_param_t.PARAM_EO_ZOOM_LEVEL.value, 1000)  
-    my_payload.setParamRate(payload_param_t.PARAM_IR_ZOOM_LEVEL.value, 1000)  
+    my_payload.setParamRate(payload_param_t.PARAM_EO_ZOOM_LEVEL, 1000)  
+    my_payload.setParamRate(payload_param_t.PARAM_IR_ZOOM_LEVEL, 1000)  
     
     # Set view source to EO/IR
     print("Set view source to EO/IR!")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EOIR.value, param_type.PARAM_TYPE_UINT32.value) 
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, payload_camera_view_src.PAYLOAD_CAMERA_VIEW_EOIR, param_type.PARAM_TYPE_UINT32) 
 
     # Change EO zoom mode to Super Resolution
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, Payload_Camera_Video_Zoom_Mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION.value, param_type.PARAM_TYPE_UINT32.value) 
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_MODE, payload_camera_video_zoom_mode.PAYLOAD_CAMERA_VIDEO_ZOOM_MODE_SUPER_RESOLUTION, param_type.PARAM_TYPE_UINT32) 
 
     # Perform zoom operations in a loop
     while not time_to_exit:
 
         # Zoom EO to 1x
         print("zoom EO to 1x")
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_SUPER_RESOLUTION_FACTOR, Payload_Camera_Video_Zoom_Super_Resolution_Factor.ZOOM_SUPER_RESOLUTION_1X.value, param_type.PARAM_TYPE_UINT32.value)  
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_SUPER_RESOLUTION_FACTOR, payload_camera_video_zoom_super_resolution_factor.ZOOM_SUPER_RESOLUTION_1X, param_type.PARAM_TYPE_UINT32)  
         time.sleep(3)
         
         # Zoom EO to 4x
         print("zoom EO to 4x")
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_SUPER_RESOLUTION_FACTOR, Payload_Camera_Video_Zoom_Super_Resolution_Factor.ZOOM_SUPER_RESOLUTION_4X.value, param_type.PARAM_TYPE_UINT32.value)
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_ZOOM_SUPER_RESOLUTION_FACTOR, payload_camera_video_zoom_super_resolution_factor.ZOOM_SUPER_RESOLUTION_4X, param_type.PARAM_TYPE_UINT32)
         time.sleep(3) 
         
         # Zoom IR to 1x
         print("zoom IR to 1x")
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_1X.value, param_type.PARAM_TYPE_UINT32.value) 
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, payload_camera_ir_zoom_factor.ZOOM_IR_1X, param_type.PARAM_TYPE_UINT32) 
         time.sleep(3)  
         
         # Zoom IR to 4x
         print("zoom IR to 4x")
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, Payload_Camera_Ir_Zoom_Factor.ZOOM_IR_4X.value, param_type.PARAM_TYPE_UINT32.value) 
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_IR_ZOOM_FACTOR, payload_camera_ir_zoom_factor.ZOOM_IR_4X, param_type.PARAM_TYPE_UINT32) 
         time.sleep(3)  
         
         # Short delay to prevent high CPU usage

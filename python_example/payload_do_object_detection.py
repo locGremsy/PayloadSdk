@@ -42,23 +42,23 @@ def main():
 
     # Set view source to EO
     print("Set view source to EO!")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, Payload_Camera_View_Src.PAYLOAD_CAMERA_VIEW_EO.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIEW_SRC, payload_camera_view_src.PAYLOAD_CAMERA_VIEW_EO, param_type.PARAM_TYPE_UINT32)
     time.sleep(0.5)  
 
     # Enable object detection
     print("Enable object detection, delay in 5 secs")
     if PAYLOAD_TYPE in ["VIO", "ZIO"]:
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_TRACKING_MODE, Payload_Camera_Tracking_Mode.PAYLOAD_CAMERA_TRACKING_OBJ_DETECTION.value, param_type.PARAM_TYPE_UINT32.value)
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_TRACKING_MODE, payload_camera_tracking_mode.PAYLOAD_CAMERA_TRACKING_OBJ_DETECTION, param_type.PARAM_TYPE_UINT32)
     elif PAYLOAD_TYPE == "GHADRON":
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_OBJECT_DETECTION, Payload_Camera_Object_Detection.PAYLOAD_CAMERA_OBJECT_DETECTION_ENABLE.value, param_type.PARAM_TYPE_UINT32.value)
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_OBJECT_DETECTION, payload_camera_object_detection.PAYLOAD_CAMERA_OBJECT_DETECTION_ENABLE, param_type.PARAM_TYPE_UINT32)
     time.sleep(5) 
 
     # Disable object detection
     print("Disable object detection. Exit!")
     if PAYLOAD_TYPE in ["VIO", "ZIO"]:
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_TRACKING_MODE, Payload_Camera_Tracking_Mode.PAYLOAD_CAMERA_TRACKING_OBJ_TRACKING.value, param_type.PARAM_TYPE_UINT32.value)
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_TRACKING_MODE, payload_camera_tracking_mode.PAYLOAD_CAMERA_TRACKING_OBJ_TRACKING, param_type.PARAM_TYPE_UINT32)
     elif PAYLOAD_TYPE == "GHADRON":
-        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_OBJECT_DETECTION, Payload_Camera_Object_Detection.PAYLOAD_CAMERA_OBJECT_DETECTION_DISABLE.value, param_type.PARAM_TYPE_UINT32.value)
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_OBJECT_DETECTION, payload_camera_object_detection.PAYLOAD_CAMERA_OBJECT_DETECTION_DISABLE, param_type.PARAM_TYPE_UINT32)
     time.sleep(0.5)  
 
     # Close payload interface

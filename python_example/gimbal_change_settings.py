@@ -30,12 +30,12 @@ def quit_handler(sig, frame):
 def onPayloadParamChanged(event: int, param_char: str, param: list):
     global STIFF_TILT_VALUE, step_num
 
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS.value:
+    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         # param[0]: param_index
         # param[1]: value
         print(f" --> Payload_param: {param[0]}, value: {param[1]:.2f}")
 
-    if event == payload_status_event_t.PAYLOAD_GB_PARAMS.value:
+    if event == payload_status_event_t.PAYLOAD_GB_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         print(f"--> Gimbal_param: index: {param[0]}, id: {param_char}, value: {param[1]}")

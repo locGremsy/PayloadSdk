@@ -5,7 +5,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from libs_python.payload_sdk import PayloadSdkInterface, MavlinkSystemTime
+from libs_python.payload_sdk import PayloadSdkInterface, mavlink_system_time_t
 from libs_python.payload_define import *
 from libs_python.mavlink_define import *
 
@@ -50,7 +50,7 @@ def main():
 
     while True:
 
-        sys_time = MavlinkSystemTime()
+        sys_time = mavlink_system_time_t()
         sys_time.time_boot_ms = boot_time_ms
         boot_time_ms += 100  # Need to add boot time milliseconds of your system here
         sys_time.time_unix_usec = get_epoch_time_in_microseconds()  # Get the current time in epoch time in microseconds

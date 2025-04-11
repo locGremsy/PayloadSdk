@@ -2,7 +2,7 @@ from enum import Enum
 import ctypes
 
 # MAVLink message structures
-class MavlinkMessageT(ctypes.Structure):
+class mavlink_message_t(ctypes.Structure):
     _pack_ = 1
     _fields_ = [
         ("checksum", ctypes.c_uint16),
@@ -20,7 +20,7 @@ class MavlinkMessageT(ctypes.Structure):
     ]
 
 # MAVLink global position structure
-class MavlinkGlobalPositionInt(ctypes.Structure):
+class mavlink_global_position_int_t(ctypes.Structure):
     _fields_ = [
         ("time_boot_ms", ctypes.c_uint32), 
         ("lat", ctypes.c_int32),           
@@ -34,13 +34,13 @@ class MavlinkGlobalPositionInt(ctypes.Structure):
     ]   
 
 # MAVLink system time structure
-class MavlinkSystemTime(ctypes.Structure):
+class mavlink_system_time_t(ctypes.Structure):
     _fields_ = [
         ("time_unix_usec", ctypes.c_uint64),  
         ("time_boot_ms", ctypes.c_uint32),  
     ]
 
-class CAMERA_ZOOM_TYPE(Enum):
+class camera_zoom_type(Enum):
    ZOOM_TYPE_STEP            =                                             0 
    ZOOM_TYPE_CONTINUOUS      =                                             1 
    ZOOM_TYPE_RANGE           =                                             2 
@@ -48,13 +48,13 @@ class CAMERA_ZOOM_TYPE(Enum):
    ZOOM_TYPE_HORIZONTAL_FOV  =                                             4 
    CAMERA_ZOOM_TYPE_ENUM_END =                                             5
 
-class CAMERA_MODE(Enum):
+class camera_mode(Enum):
    CAMERA_MODE_IMAGE        =                                              0
    CAMERA_MODE_VIDEO        =                                              1
    CAMERA_MODE_IMAGE_SURVEY =                                              2
    CAMERA_MODE_ENUM_END     =                                              3
 
-class CAMERA_CAP_FLAGS(Enum):
+class camera_cap_flags(Enum):
    CAMERA_CAP_FLAGS_CAPTURE_VIDEO                   =                      1
    CAMERA_CAP_FLAGS_CAPTURE_IMAGE                   =                      2
    CAMERA_CAP_FLAGS_HAS_MODES                       =                      4
@@ -70,7 +70,7 @@ class CAMERA_CAP_FLAGS(Enum):
    CAMERA_CAP_FLAGS_HAS_THERMAL_RANGE               =                      4096
    CAMERA_CAP_FLAGS_ENUM_END                        =                      4097
 
-class VIDEO_STREAM_TYPE(Enum):
+class video_stream_type(Enum):
    VIDEO_STREAM_TYPE_RTSP     =                                            0
    VIDEO_STREAM_TYPE_RTPUDP   =                                            1
    VIDEO_STREAM_TYPE_TCP_MPEG =                                            2

@@ -43,22 +43,22 @@ def main():
 
     # Set gimbal RC mode to STANDARD 
     print("Set gimbal RC mode")
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, Payload_Camera_Rc_Mode.PAYLOAD_CAMERA_RC_MODE_STANDARD.value, param_type.PARAM_TYPE_UINT32.value)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, payload_camera_rc_mode.PAYLOAD_CAMERA_RC_MODE_STANDARD, param_type.PARAM_TYPE_UINT32)
     time.sleep(0.1)  
 
     # Move gimbal yaw to 90 deg
     print("Move gimbal yaw to 90 deg, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, 90, input_mode_t.INPUT_ANGLE.value)
+    my_payload.setGimbalSpeed(0, 0, 90, input_mode_t.INPUT_ANGLE)
     time.sleep(5)  
 
     # Move gimbal yaw to -90 deg
     print("Move gimbal yaw to -90 deg, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, -90, input_mode_t.INPUT_ANGLE.value)
+    my_payload.setGimbalSpeed(0, 0, -90, input_mode_t.INPUT_ANGLE)
     time.sleep(5)  
 
     # Move gimbal yaw to 0 deg
     print("Move gimbal yaw to 0 deg, delay in 5secs")
-    my_payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_ANGLE.value)
+    my_payload.setGimbalSpeed(0, 0, 0, input_mode_t.INPUT_ANGLE)
     time.sleep(0.5) 
 
     # Close payload interface

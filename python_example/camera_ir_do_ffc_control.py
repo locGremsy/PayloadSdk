@@ -48,12 +48,12 @@ def main():
     my_payload.checkPayloadConnection()
 
     # Change FFC mode to Auto
-    my_payload.setPayloadCameraFFCMode(ffc_mode_t.FFC_MODE_AUTO.value)
+    my_payload.setPayloadCameraFFCMode(ffc_mode_t.FFC_MODE_AUTO)
     print("Change FFC to Auto, waiting for 5secs.")
     time.sleep(5)
 
     # Change FFC mode to Manual
-    my_payload.setPayloadCameraFFCMode(ffc_mode_t.FFC_MODE_MANUAL.value)
+    my_payload.setPayloadCameraFFCMode(ffc_mode_t.FFC_MODE_MANUAL)
     print("Change FFC to Manual, waiting for 5secs.")
     time.sleep(5)  
 
