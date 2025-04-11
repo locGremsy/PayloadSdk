@@ -49,5 +49,5 @@ Example:
 
 - Run example
 ```shell
-python3 PayloadSdk/python_example/payload_do_object_detection.cpp
+python3 PayloadSdk/python_example/payload_do_object_detection.py
 ```
