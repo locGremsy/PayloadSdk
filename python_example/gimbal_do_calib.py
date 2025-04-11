@@ -32,8 +32,8 @@ def sdk_log(func_name, message):
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
+    global my_payload, is_exit
     print("\nTERMINATING AT USER REQUEST")
-    global is_exit
     is_exit = True
 
     # Close payload interface

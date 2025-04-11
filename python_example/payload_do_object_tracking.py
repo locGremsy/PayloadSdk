@@ -24,7 +24,7 @@ track_pos_h = 0.0
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST\n")
     time_to_exit = True
     
@@ -95,7 +95,7 @@ def all_threads_init():
     print("Thread created\n")
 
 def main():
-    global my_payload
+    global my_payload, time_to_exit
 
     print("Starting Do Object Tracking example...\n")
     signal.signal(signal.SIGINT, quit_handler)

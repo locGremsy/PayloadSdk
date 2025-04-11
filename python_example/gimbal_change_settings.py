@@ -15,6 +15,7 @@ step_num = 0
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
+    global my_payload
     print("\nTERMINATING AT USER REQUEST")
 
     # Close payload interface

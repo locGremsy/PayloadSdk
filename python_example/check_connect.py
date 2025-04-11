@@ -14,8 +14,8 @@ time_to_exit = False
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST")
-    global time_to_exit
     time_to_exit = True
 
     # Close payload interface

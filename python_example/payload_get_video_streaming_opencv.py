@@ -21,7 +21,7 @@ video_thread = None
 my_job = get_stream_sequence_t.CHECK_CAMERA_INFO
 
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST\n")
     time_to_exit = True
     if my_payload:
@@ -92,7 +92,7 @@ def opencv_terminate():
         video_thread.join()
 
 def main():
-    global my_payload, my_job
+    global my_payload, my_job, time_to_exit
     print("Starting GetStreaming example...")
     signal.signal(signal.SIGINT, quit_handler)
 

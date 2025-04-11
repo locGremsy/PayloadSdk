@@ -28,7 +28,7 @@ time_to_view = 10
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST\n")
     time_to_exit = True
 
@@ -71,7 +71,7 @@ def onPayloadStreamChanged(event: int, param_char: str, param_double: list):
             stream_uri = param_char
 
 def run_video_stream():
-    global time_to_exit, stream_uri, main_pipeline, loop
+    global stream_uri, main_pipeline, loop
 
     if not is_rtsp_stream or not stream_uri:
         print("No RTSP stream available")
@@ -124,7 +124,7 @@ def gstreamer_terminate():
         video_thread.join()
 
 def main():
-    global my_payload, my_job
+    global my_payload, my_job, time_to_exit
 
     print("Starting GetStreaming example...")
     signal.signal(signal.SIGINT, quit_handler)

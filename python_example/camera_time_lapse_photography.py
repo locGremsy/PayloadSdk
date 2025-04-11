@@ -19,7 +19,7 @@ my_capture = time_lapse_capture_sequence_t.CHECK_STORAGE
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST")
     time_to_exit = True
 

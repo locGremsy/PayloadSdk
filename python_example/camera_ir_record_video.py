@@ -18,7 +18,7 @@ my_capture = record_sequence_t.CHECK_STORAGE
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST")
     time_to_exit = True
 
@@ -33,7 +33,7 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    global my_capture, time_to_record, time_to_exit
+    global my_capture, time_to_exit
     if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_CAPTURE_STATUS:
 
         # param[0]: image_status

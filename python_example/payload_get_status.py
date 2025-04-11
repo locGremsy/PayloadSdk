@@ -14,7 +14,7 @@ time_to_exit = False
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
-    global time_to_exit
+    global my_payload, time_to_exit
     print("\nTERMINATING AT USER REQUEST")
     time_to_exit = True
 
@@ -93,7 +93,7 @@ def onPayloadStatusChanged(event: int, param: list):
                 print(f"Payload PARAM_CAM_IR_FFC_MODE: {param[1]:.2f}")
 
 def main():
-    global my_payload
+    global my_payload, time_to_exit
 
     print("Starting Set gimbal mode example...")
     signal.signal(signal.SIGINT, quit_handler)
