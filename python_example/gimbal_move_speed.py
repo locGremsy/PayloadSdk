@@ -26,7 +26,7 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_GB_ATTITUDE:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_GB_ATTITUDE:
         # param[0]: pitch
         # param[1]: roll
         # param[2]: yaw

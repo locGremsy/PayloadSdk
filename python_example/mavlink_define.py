@@ -1,5 +1,6 @@
 from enum import Enum
 import ctypes
+from .enum_base import IntEnumBase, FloatEnumBase
 
 # MAVLink message structures
 class mavlink_message_t(ctypes.Structure):
@@ -40,7 +41,7 @@ class mavlink_system_time_t(ctypes.Structure):
         ("time_boot_ms", ctypes.c_uint32),  
     ]
 
-class camera_zoom_type(Enum):
+class camera_zoom_type(FloatEnumBase):
    ZOOM_TYPE_STEP            =                                             0 
    ZOOM_TYPE_CONTINUOUS      =                                             1 
    ZOOM_TYPE_RANGE           =                                             2 
@@ -48,13 +49,13 @@ class camera_zoom_type(Enum):
    ZOOM_TYPE_HORIZONTAL_FOV  =                                             4 
    CAMERA_ZOOM_TYPE_ENUM_END =                                             5
 
-class camera_mode(Enum):
+class camera_mode(IntEnumBase):
    CAMERA_MODE_IMAGE        =                                              0
    CAMERA_MODE_VIDEO        =                                              1
    CAMERA_MODE_IMAGE_SURVEY =                                              2
    CAMERA_MODE_ENUM_END     =                                              3
 
-class camera_cap_flags(Enum):
+class camera_cap_flags(IntEnumBase):
    CAMERA_CAP_FLAGS_CAPTURE_VIDEO                   =                      1
    CAMERA_CAP_FLAGS_CAPTURE_IMAGE                   =                      2
    CAMERA_CAP_FLAGS_HAS_MODES                       =                      4
@@ -70,7 +71,7 @@ class camera_cap_flags(Enum):
    CAMERA_CAP_FLAGS_HAS_THERMAL_RANGE               =                      4096
    CAMERA_CAP_FLAGS_ENUM_END                        =                      4097
 
-class video_stream_type(Enum):
+class video_stream_type(IntEnumBase):
    VIDEO_STREAM_TYPE_RTSP     =                                            0
    VIDEO_STREAM_TYPE_RTPUDP   =                                            1
    VIDEO_STREAM_TYPE_TCP_MPEG =                                            2

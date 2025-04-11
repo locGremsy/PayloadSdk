@@ -49,7 +49,7 @@ def quit_handler(sig, frame):
 def on_payload_status_changed(event: int, param: list):
     global is_calibration_running, is_exit
     
-    if event == payload_status_event_t.PAYLOAD_ACK:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_ACK:
 
         cmd_id, result, progress = param[0], param[1], param[2]
         # sdk_log("onPayloadStatusChanged", f"Got ack from {cmd_id:.0f}, result {result:.0f}, progress: {progress:.0f}")
@@ -130,10 +130,10 @@ def on_payload_status_changed(event: int, param: list):
 
 # Callback function for payload param changes
 def on_payload_param_changed(event: int, param_char: str, param: list):
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         sdk_log("onPayloadParamChanged", f"--> Payload_param: {param_char}, value: {param[1]:.2f}")
     
-    elif event == payload_status_event_t.PAYLOAD_GB_PARAMS:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_GB_PARAMS:
         sdk_log("onPayloadParamChanged", f"--> Gimbal_param: index: {param[0]:.0f}, id: {param_char}, value: {param[1]:.0f}")
 
 def main():

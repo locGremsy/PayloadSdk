@@ -40,23 +40,23 @@ def quit_handler(sig, frame):
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
     global track_pos_x, track_pos_y, track_status, track_pos_w, track_pos_h
-    if event == payload_status_event_t.PAYLOAD_PARAMS:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_PARAMS:
         # param[0]: param index
         # param[1]: value
 
-        if param[0] == payload_param_t.PARAM_TRACK_POS_X:
+        if payload_param_t(param[0]) == payload_param_t.PARAM_TRACK_POS_X:
             track_pos_x = param[1]
 
-        elif param[0] == payload_param_t.PARAM_TRACK_POS_Y:
+        elif payload_param_t(param[0]) == payload_param_t.PARAM_TRACK_POS_Y:
             track_pos_y = param[1]
 
-        elif param[0] == payload_param_t.PARAM_TRACK_POS_W:
+        elif payload_param_t(param[0]) == payload_param_t.PARAM_TRACK_POS_W:
             track_pos_w = param[1]
 
-        elif param[0] == payload_param_t.PARAM_TRACK_POS_H:
+        elif payload_param_t(param[0]) == payload_param_t.PARAM_TRACK_POS_H:
             track_pos_h = param[1]
 
-        elif param[0] == payload_param_t.PARAM_TRACK_STATUS:
+        elif payload_param_t(param[0]) == payload_param_t.PARAM_TRACK_STATUS:
             track_status = param[1]
 
         print(f"onPayloadStatusChanged, status: {track_status:.2f}, x: {track_pos_x:.2f}, y: {track_pos_y:.2f}, w: {track_pos_w:.2f}, h: {track_pos_h:.2f}")

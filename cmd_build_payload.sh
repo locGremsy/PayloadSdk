@@ -11,6 +11,7 @@ PYTHON_EXAMPLE_DIR="./python_example"
 PAYLOAD_SDK_FILE="$PYTHON_EXAMPLE_DIR/payload_sdk.py"
 PAYLOAD_DEFINE_FILE="$PYTHON_EXAMPLE_DIR/payload_define.py"
 MAVLINK_DEFINE_FILE="$PYTHON_EXAMPLE_DIR/mavlink_define.py"
+ENUM_BASE_FILE="$PYTHON_EXAMPLE_DIR/enum_base.py"
 PAYLOAD_SDK_DIR="./PayloadSdk"
 PAYLOAD_CMAKELISTS_FILE="$PAYLOAD_SDK_DIR/CMakeLists.txt"
 
@@ -155,6 +156,13 @@ if [ -f "$MAVLINK_DEFINE_FILE" ]; then
     echo "Moved (or updated) $MAVLINK_DEFINE_FILE to $LIBS_PYTHON_DIR"
 else
     echo "Missing file: $MAVLINK_DEFINE_FILE"
+fi
+
+if [ -f "$ENUM_BASE_FILE" ]; then
+    mv -f "$ENUM_BASE_FILE" "$LIBS_PYTHON_DIR"
+    echo "Moved (or updated) $ENUM_BASE_FILE to $LIBS_PYTHON_DIR"
+else
+    echo "Missing file: $ENUM_BASE_FILE"
 fi
 
 echo "----------------------------------------------------------------------------------------------------------------------"

@@ -26,7 +26,7 @@ def quit_handler(sig, frame):
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_ACK:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_ACK:
         print(f" --> Got ack, from command: {param[0]:.0f} - result: {param[1]:.2f}")
 
 def main():

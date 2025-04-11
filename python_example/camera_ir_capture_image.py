@@ -35,7 +35,7 @@ def quit_handler(sig, frame):
 def onPayloadStatusChanged(event: int, param: list):
     global my_capture, image_to_capture, time_to_exit
 
-    if event == payload_status_event_t.PAYLOAD_CAM_CAPTURE_STATUS:      
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_CAPTURE_STATUS:      
         # param[0]: image_status
 		# param[1]: video_status
 		# param[2]: image_count
@@ -64,7 +64,7 @@ def onPayloadStatusChanged(event: int, param: list):
             else:
                 print("   ---> Payload is busy")
     
-    elif event == payload_status_event_t.PAYLOAD_CAM_STORAGE_INFO:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_STORAGE_INFO:
         # param[0]: total_capacity
 		# param[1]: used_capacity
 		# param[2]: available_capacity
@@ -81,7 +81,7 @@ def onPayloadStatusChanged(event: int, param: list):
                 my_capture = capture_sequence_t.IDLE
                 print("   ---> Payload's storage is not ready")
     
-    elif event == payload_status_event_t.PAYLOAD_CAM_SETTINGS:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_SETTINGS:
         # param[0]: mode_id
 		# param[1]: zoomLevel
 		# param[2]: focusLevel

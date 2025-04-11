@@ -27,7 +27,7 @@ def quit_handler(sig, frame):
 # Callback function for payload param changes
 def onPayloadParamChanged(event: int, param_char: str, param: list):
     
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         print(f" --> Param_id: {param_char}, value: {param[1]:.2f}")

@@ -30,20 +30,20 @@ def quit_handler(sig, frame):
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
 
-    if event == payload_status_event_t.PAYLOAD_ACK:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_ACK:
         print(f" --> Got ack, from command: {param[0]:.0f} - result: {param[1]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK:
         print(f" --> Got ext_ack, result {param[0]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAMS:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_PARAMS:
         # param[0]: param index
 		# param[1]: value
 
-        if param[0] == payload_param_t.PARAM_EO_ZOOM_LEVEL:  
+        if payload_param_t(param[0]) == payload_param_t.PARAM_EO_ZOOM_LEVEL:  
             print(f"Payload EO_ZOOM_LEVEL: {param[1]:.2f}")
 
-        elif param[0] == payload_param_t.PARAM_IR_ZOOM_LEVEL:  
+        elif payload_param_t(param[0]) == payload_param_t.PARAM_IR_ZOOM_LEVEL:  
             print(f"Payload IR_ZOOM_LEVEL: {param[1]:.2f}")
 
 

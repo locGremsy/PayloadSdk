@@ -26,22 +26,22 @@ def quit_handler(sig, frame):
 
 # Callback function for payload param changes   
 def onPayloadParamChanged(event: int, param_char: str, param: list):
-    if event == payload_status_event_t.PAYLOAD_CAM_PARAMS:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         print(f" --> Payload_param: {param_char}, value: {param[1]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_GB_PARAMS:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_GB_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         print(f"--> Gimbal_param: index: {param[0]:.0f}, id: {param_char}, value: {param[1]:.0f}")
 
 # Callback function for payload status changes
 def onPayloadStatusChanged(event: int, param: list):
-    if event == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_PARAM_EXT_ACK:
         print(f" --> Got ack, result {param[0]:.2f}")
 
-    elif event == payload_status_event_t.PAYLOAD_PARAMS:
+    elif payload_status_event_t(event) == payload_status_event_t.PAYLOAD_PARAMS:
         # param[0]: param_index
 		# param[1]: value
         if param[0] == 0:  

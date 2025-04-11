@@ -34,8 +34,8 @@ def quit_handler(sig, frame):
 
 def onPayloadStatusChanged(event: int, param: list):
     global my_job
-    if event == payload_status_event_t.PAYLOAD_CAM_INFO:
-        if int(param[0]) & camera_cap_flags.CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_INFO:
+        if int(param[0]) & int(camera_cap_flags.CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM):
             print("   ---> Got payload has streaming video, Check streaming URI")
             my_job = get_stream_sequence_t.CHECK_STREAMING_URI
         else:
@@ -44,13 +44,13 @@ def onPayloadStatusChanged(event: int, param: list):
 
 def onPayloadStreamChanged(event: int, param_char: str, param_double: list):
     global my_job, stream_uri, is_rtsp_stream
-    if event == payload_status_event_t.PAYLOAD_CAM_STREAMINFO:
+    if payload_status_event_t(event) == payload_status_event_t.PAYLOAD_CAM_STREAMINFO:
         print("   ---> Got streaming information:")
         print(f"   ---> Streaming type: {param_double[0]:.2f}")
         print(f"   ---> Streaming uri: {param_char}")
         if my_job == get_stream_sequence_t.CHECK_STREAMING_URI:
             my_job = get_stream_sequence_t.START_PIPELINE
-            is_rtsp_stream = (param_double[0] == video_stream_type.VIDEO_STREAM_TYPE_RTSP)
+            is_rtsp_stream = (video_stream_type(param_double[0]) == video_stream_type.VIDEO_STREAM_TYPE_RTSP)
             stream_uri = param_char
 
 def run_video_stream():

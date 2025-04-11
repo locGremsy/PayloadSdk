@@ -3,8 +3,8 @@ import time
 import os
 from enum import Enum
 from typing import Callable
-from .payload_define import *
 from .mavlink_define import *
+from .enum_base import IntEnumBase, FloatEnumBase
 
 # Payload type
 PAYLOAD_TYPE = "VIO"
@@ -32,9 +32,9 @@ class T_ConnInfoStruct(ctypes.Structure):
     _anonymous_ = ("device",)
     _fields_ = [("type", ctypes.c_uint8),
                 ("device", T_ConnInfo)]
-
+    
 # Param type enum
-class param_type(Enum):
+class param_type(IntEnumBase):
     PARAM_TYPE_UINT8  = 1
     PARAM_TYPE_INT8   = 2
     PARAM_TYPE_UINT16 = 3
@@ -47,7 +47,7 @@ class param_type(Enum):
     PARAM_TYPE_REAL64 = 10
 
 # Payload status event enum
-class payload_status_event_t(Enum):
+class payload_status_event_t(IntEnumBase):
     PAYLOAD_CAM_CAPTURE_STATUS = 0
     PAYLOAD_CAM_STORAGE_INFO   = 1
     PAYLOAD_CAM_SETTINGS       = 2
@@ -61,7 +61,7 @@ class payload_status_event_t(Enum):
     PAYLOAD_PARAM_EXT_ACK      = 10
 
 # Payload param enum
-class payload_param_t(Enum):
+class payload_param_t(IntEnumBase):
     PARAM_EO_ZOOM_LEVEL     = 0
     PARAM_IR_ZOOM_LEVEL     = 1
     PARAM_LRF_RANGE         = 2
@@ -90,18 +90,18 @@ class payload_param_t(Enum):
     PARAM_COUNT             = 25
 
 # Input mode enum
-class input_mode_t(Enum):
+class input_mode_t(IntEnumBase):
     INPUT_ANGLE = 1
     INPUT_SPEED = 2
 
 # FFC mode enum
-class ffc_mode_t(Enum):
+class ffc_mode_t(IntEnumBase):
     FFC_MODE_MANUAL = 0
     FFC_MODE_AUTO   = 1
     FFC_MODE_END    = 2
 
 # Capture sequence enum
-class capture_sequence_t(Enum):
+class capture_sequence_t(IntEnumBase):
     IDLE                 = 0
     CHECK_STORAGE        = 1
     CHECK_CAPTURE_STATUS = 2
@@ -110,8 +110,31 @@ class capture_sequence_t(Enum):
     DO_CAPTURE           = 5
     WAIT_CAPTURE_DONE    = 6
 
+# Time lapse capture sequence enum
+class time_lapse_capture_sequence_t(IntEnumBase):
+    IDLE = 0
+    CHECK_STORAGE = 1
+    CHECK_CAPTURE_STATUS = 2
+    CHECK_CAMERA_MODE = 3
+    CHANGE_CAMERA_MODE = 4
+    DO_CAPTURE = 5
+    IMAGE_IN_CAPTURING = 6
+    STOP_CAPTURING_IMAGE = 7
+
+# Record sequence enum
+class record_sequence_t(IntEnumBase):
+    IDLE = 0
+    CHECK_STORAGE = 1
+    CHECK_CAPTURE_STATUS = 2
+    CHECK_CAMERA_MODE = 3
+    CHANGE_CAMERA_MODE = 4
+    DO_RECORD_VIDEO = 5
+    VIDEO_IN_RECORDING = 6
+    STOP_RECORD_VIDEO = 7
+    WAIT_RECORD_DONE = 8
+
 # Calib type enum
-class calib_type_t(Enum):
+class calib_type_t(IntEnumBase):
     CALIB_GYRO  = 0
     CALIB_ACCEL = 1
     AUTO_TUNE   = 2
@@ -119,13 +142,13 @@ class calib_type_t(Enum):
     SEARCH_HOME = 4
 
 # Tracking cmd enum
-class tracking_cmd_t(Enum):
+class tracking_cmd_t(FloatEnumBase):
     TRACK_IDLE = 0
     TRACK_ACT  = 1
     TRACK_LOST = 2
 
 # Stream sequence enum
-class get_stream_sequence_t(Enum):
+class get_stream_sequence_t(IntEnumBase):
     IDLE                = 0
     CHECK_CAMERA_INFO   = 1
     CHECK_STREAMING_URI = 2
@@ -211,7 +234,7 @@ class PayloadSdkInterface:
         
         # FFC functions
         self.lib.PayloadSdkInterface_setPayloadCameraFFCTrigg.argtypes = [ctypes.c_void_p]
-        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode.argtypes = [ctypes.c_void_p]
+        self.lib.PayloadSdkInterface_setPayloadCameraFFCMode.argtypes = [ctypes.c_void_p, ctypes.c_uint8]
 
         # GPS and system time functions
         self.lib.PayloadSdkInterface_sendPayloadGPSPosition.argtypes = [ctypes.c_void_p, mavlink_global_position_int_t]
