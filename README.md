@@ -23,6 +23,7 @@ git clone --recurse-submodules -b develop ssh://git@gitlab.gremsy.vn:2224/ai/tay
 - Run script for build project
 
 ```shell
+cd payloadsdk_python/
 chmod +x cmd_build_payload.sh
 ./cmd_build_payload.sh
 ```
