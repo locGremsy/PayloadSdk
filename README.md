@@ -19,7 +19,7 @@ This branch supported:
 git clone --recurse-submodules -b develop ssh://git@gitlab.gremsy.vn:2224/ai/tay-cu/payloadsdk_python.git
 ```
 
-## How to build
+## How to build and run example
 - Run script for update wrapper.cpp file to PayloadSDK libs
 
 ```shell
@@ -27,16 +27,7 @@ chmod +x update_payloadsdk.sh
 ./update_payloadsdk.sh
 ```
 
-- Build share lib
-<pre>
-cd PayloadSdk
-mkdir build && cd build
-
-cmake -D<b>payload</b> ../
-<i>e.g. cmake -DVIO=1 ../</i>
-<i>     cmake -DGHADRON=1 ../</i>
-<i>     cmake -DZIO=1 ../</i>
-
-make -j6
-
-</pre>
+- Run example
+```shell
+python3 PayloadSdk/python_example/payload_do_object_detection.cpp
+```
