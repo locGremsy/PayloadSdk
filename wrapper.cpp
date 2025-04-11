@@ -243,7 +243,7 @@ extern "C" void PayloadSdkInterface_getPayloadGimbalSettingByIndex(void *obj, ui
  **/
 extern "C" void PayloadSdkInterface_setPayloadCameraMode(void *obj, uint8_t mode)
 {
-    ((PayloadSdkInterface *)obj)->setPayloadCameraMode((camera_mode)mode);
+    ((PayloadSdkInterface *)obj)->setPayloadCameraMode((CAMERA_MODE)mode);
 }
 
 /**
