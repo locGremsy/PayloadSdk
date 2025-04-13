@@ -3,12 +3,9 @@ import signal
 import sys
 from enum import Enum
 import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, calib_type_t
-from libs_python.payload_define import *
-from libs_python.mavlink_define import *
+from libs.payload_sdk import PayloadSdkInterface, payload_status_event_t, calib_type_t
+from libs.payload_define import *
+from libs.mavlink_define import *
 
 # Define constants for MAVLink commands
 MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION = 42503  

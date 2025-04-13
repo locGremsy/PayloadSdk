@@ -165,7 +165,7 @@ class PayloadSdkInterface:
 
         # Load the shared library with error handling
         try:
-            self.lib = ctypes.CDLL("/home/onion/Desktop/payloadsdk_python/PayloadSdk/build/libs/libPayloadSDK.so")
+            self.lib = ctypes.CDLL("libPayloadSdkInterface.so")
         except OSError as e:
             print(f"Failed to load shared library: {e}")
             exit(1)

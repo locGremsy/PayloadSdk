@@ -2,12 +2,9 @@ import time
 import signal
 import sys
 import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from libs_python.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t, PAYLOAD_TYPE
-from libs_python.payload_define import *
-from libs_python.mavlink_define import *
+from libs.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t, PAYLOAD_TYPE
+from libs.payload_define import *
+from libs.mavlink_define import *
 
 my_payload = None
 
@@ -56,7 +53,7 @@ def main():
     my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RC_MODE, payload_camera_rc_mode.PAYLOAD_CAMERA_RC_MODE_STANDARD, param_type.PARAM_TYPE_UINT32) 
     
     # Change setting of OSD_MODE to STATUS to enable viewing of the zoom factor
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE , payload_camera_osd_mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_STATUS, param_type.PARAM_TYPE_UINT32)  
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_VIDEO_OSD_MODE , payload_camera_osd_mode.PAYLOAD_CAMERA_VIDEO_OSD_MODE_DEBUG, param_type.PARAM_TYPE_UINT32)  
     
     print("------------------------> Init values \n")
     # Request to read all settings of the payload and then check the RC_MODE setting

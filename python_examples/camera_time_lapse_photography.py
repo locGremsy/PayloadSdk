@@ -3,12 +3,9 @@ import signal
 import sys
 from enum import Enum
 import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from libs_python.payload_sdk import PayloadSdkInterface, payload_status_event_t, param_type, time_lapse_capture_sequence_t
-from libs_python.payload_define import *
-from libs_python.mavlink_define import *
+from libs.payload_sdk import PayloadSdkInterface, payload_status_event_t, param_type, time_lapse_capture_sequence_t
+from libs.payload_define import *
+from libs.mavlink_define import *
 
 my_payload = None
 interval = 3  

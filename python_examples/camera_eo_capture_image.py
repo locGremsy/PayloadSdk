@@ -3,12 +3,9 @@ import signal
 import sys
 from enum import Enum
 import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from libs_python.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t, capture_sequence_t
-from libs_python.payload_define import *
-from libs_python.mavlink_define import *        
+from libs.payload_sdk import PayloadSdkInterface, param_type, payload_status_event_t, capture_sequence_t, PAYLOAD_TYPE
+from libs.payload_define import *
+from libs.mavlink_define import *
 
 my_payload = None
 image_to_capture = 3
@@ -117,11 +114,15 @@ def main():
     
     # Set payload to IMAGE mode for testing
     my_payload.setPayloadCameraMode(camera_mode.CAMERA_MODE_IMAGE)  
-    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RECORD_SRC, payload_camera_record_src.PAYLOAD_CAMERA_RECORD_IR, param_type.PARAM_TYPE_UINT32)
+    my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_RECORD_SRC, payload_camera_record_src.PAYLOAD_CAMERA_RECORD_EO, param_type.PARAM_TYPE_UINT32)
+    
+    # Set photo storage to Internal
+    if PAYLOAD_TYPE == "GHADRON":
+        my_payload.setPayloadCameraParam(PAYLOAD_CAMERA_STORAGE, payload_camera_storage.PAYLOAD_CAMERA_STORAGE_INTERNAL, param_type.PARAM_TYPE_UINT32)
 
     while not time_to_exit:
 
-        # Capture IR image with payload following this sequence
+        # Capture image with payload following this sequence
         if my_capture == capture_sequence_t.IDLE:
             # Wait in idle state
             pass  

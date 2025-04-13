@@ -5,7 +5,6 @@ ROOT_DIR="$(realpath "$(dirname "$0")")"
 # Define paths
 WRAPPER_FILE="./wrapper.cpp"
 LIBS_DIR="./PayloadSdk/libs"
-LIBS_PYTHON_DIR="./PayloadSdk/libs_python"
 CMAKELISTS_FILE="$LIBS_DIR/CMakeLists.txt"
 PYTHON_EXAMPLE_DIR="./python_example"
 PAYLOAD_SDK_FILE="$PYTHON_EXAMPLE_DIR/payload_sdk.py"
@@ -115,25 +114,10 @@ fi
 
 echo "----------------------------------------------------------------------------------------------------------------------"
 
-echo "Checking and moving Python files to $LIBS_PYTHON_DIR"
-
-# Create directory if it does not exist
-if [ ! -d "$LIBS_PYTHON_DIR" ]; then
-    echo "Creating $LIBS_PYTHON_DIR directory"
-    mkdir "$LIBS_PYTHON_DIR"
-else
-    echo "$LIBS_PYTHON_DIR already exists."
-fi
 
 # Define destination
-PAYLOAD_SDK_DEST="$LIBS_PYTHON_DIR/payload_sdk.py"
+PAYLOAD_SDK_DEST="$ROOT_DIR/python_examples/libs/payload_sdk.py"
 
-# Move and update PAYLOAD_TYPE
-if [ -f "$PAYLOAD_SDK_FILE" ]; then
-    echo "Moving $PAYLOAD_SDK_FILE to $LIBS_PYTHON_DIR"
-    mv -f "$PAYLOAD_SDK_FILE" "$LIBS_PYTHON_DIR"
-    echo "Moved (or updated) $PAYLOAD_SDK_FILE to $LIBS_PYTHON_DIR"
-fi
 
 if [ -f "$PAYLOAD_SDK_DEST" ]; then
     echo "Updating PAYLOAD_TYPE in $PAYLOAD_SDK_DEST to \"$PAYLOAD_TYPE\""
@@ -143,50 +127,6 @@ else
     echo "Error: $PAYLOAD_SDK_DEST not found!"
 fi
 
-# Move define files
-if [ -f "$PAYLOAD_DEFINE_FILE" ]; then
-    mv -f "$PAYLOAD_DEFINE_FILE" "$LIBS_PYTHON_DIR"
-    echo "Moved (or updated) $PAYLOAD_DEFINE_FILE to $LIBS_PYTHON_DIR"
-else
-    echo "Missing file: $PAYLOAD_DEFINE_FILE"
-fi
-
-if [ -f "$MAVLINK_DEFINE_FILE" ]; then
-    mv -f "$MAVLINK_DEFINE_FILE" "$LIBS_PYTHON_DIR"
-    echo "Moved (or updated) $MAVLINK_DEFINE_FILE to $LIBS_PYTHON_DIR"
-else
-    echo "Missing file: $MAVLINK_DEFINE_FILE"
-fi
-
-if [ -f "$ENUM_BASE_FILE" ]; then
-    mv -f "$ENUM_BASE_FILE" "$LIBS_PYTHON_DIR"
-    echo "Moved (or updated) $ENUM_BASE_FILE to $LIBS_PYTHON_DIR"
-else
-    echo "Missing file: $ENUM_BASE_FILE"
-fi
-
-echo "----------------------------------------------------------------------------------------------------------------------"
-
-# Move python_example directory
-echo "Checking and moving $PYTHON_EXAMPLE_DIR to $PAYLOAD_SDK_DIR"
-
-if [ -d "$PYTHON_EXAMPLE_DIR" ]; then
-    if [ -d "$PAYLOAD_SDK_DIR" ]; then
-        TARGET_PYTHON_EXAMPLE_DIR="$PAYLOAD_SDK_DIR/python_example"
-        if [ -d "$TARGET_PYTHON_EXAMPLE_DIR" ]; then
-            echo "$TARGET_PYTHON_EXAMPLE_DIR already exists. Removing to update"
-            rm -rf "$TARGET_PYTHON_EXAMPLE_DIR"
-        fi
-        mv "$PYTHON_EXAMPLE_DIR" "$PAYLOAD_SDK_DIR"
-        echo "Moved (or updated) $PYTHON_EXAMPLE_DIR to $PAYLOAD_SDK_DIR"
-    else
-        echo "Missing target directory: $PAYLOAD_SDK_DIR"
-    fi
-else
-    echo "Missing directory: $PYTHON_EXAMPLE_DIR"
-fi
-
-echo "----------------------------------------------------------------------------------------------------------------------"
 
 # Move wrapper.cpp
 echo "Checking and moving $WRAPPER_FILE to $LIBS_DIR"
@@ -198,7 +138,7 @@ if [ -f "$WRAPPER_FILE" ]; then
             echo "$TARGET_WRAPPER_FILE already exists. Removing to update"
             rm -f "$TARGET_WRAPPER_FILE"
         fi
-        mv -f "$WRAPPER_FILE" "$LIBS_DIR"
+        cp "$WRAPPER_FILE" "$LIBS_DIR"
         echo "Moved (or updated) $WRAPPER_FILE to $LIBS_DIR"
     else
         echo "Missing target directory: $LIBS_DIR"
@@ -307,17 +247,16 @@ echo "Build complete."
 echo "----------------------------------------------------------------------------------------------------------------------"
 # Update shared library path in payload_sdk.py
 ABS_LIB_PATH="$ROOT_DIR/PayloadSdk/build/libs/libPayloadSDK.so"
-PAYLOAD_SDK_DEST_ABS="$ROOT_DIR/$LIBS_PYTHON_DIR/payload_sdk.py"
 
 if [ -f "$ABS_LIB_PATH" ]; then
     echo "Shared library built successfully: $ABS_LIB_PATH"
 
-    if [ -f "$PAYLOAD_SDK_DEST_ABS" ]; then
+    if [ -f "$PAYLOAD_SDK_DEST" ]; then
         echo "Updating shared library path in payload_sdk.py file"
-        sed -i -E "s|^(.*self\.lib = ctypes\.CDLL\()\s*\"[^\"]+\"\s*(\).*)|\1\"$ABS_LIB_PATH\"\2|" "$PAYLOAD_SDK_DEST_ABS"
+        sed -i -E "s|^(.*self\.lib = ctypes\.CDLL\()\s*\"[^\"]+\"\s*(\).*)|\1\"$ABS_LIB_PATH\"\2|" "$PAYLOAD_SDK_DEST"
         echo "Shared library path updated"
     else
-        echo "Error: $PAYLOAD_SDK_DEST_ABS not found."
+        echo "Error: $PAYLOAD_SDK_DEST not found."
     fi
 else
     echo "Build failed: $ABS_LIB_PATH does not exist!"

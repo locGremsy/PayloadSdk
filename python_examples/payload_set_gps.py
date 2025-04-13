@@ -3,11 +3,9 @@ import signal
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from libs_python.payload_sdk import PayloadSdkInterface, mavlink_global_position_int_t
-from libs_python.payload_define import *
-from libs_python.mavlink_define import *
+from libs.payload_sdk import PayloadSdkInterface, mavlink_global_position_int_t
+from libs.payload_define import *
+from libs.mavlink_define import *
 
 my_payload = None
 
