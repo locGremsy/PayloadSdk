@@ -20,6 +20,14 @@ This branch supports:
 git clone --recurse-submodules -b develop ssh://git@gitlab.gremsy.vn:2224/ai/tay-cu/payloadsdk_python.git
 ```
 
+## Install required libraries
+After cloning the submodule PayloadSdk C++, install the required libraries:
+
+```shell
+sudo apt-get install libcurl4-openssl-dev libjsoncpp-dev
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+```
+
 ## Setup Environment
 You can set up the environment using either `conda` or `virtualenv`.
 
@@ -63,6 +71,8 @@ chmod +x cmd_build_payload.sh
 Example: 
   ./cmd_build_payload.sh --payload VIO --ip 192.168.55.1 --port 14566
 ```
+
+> **Note:** The default IP address `192.168.55.1` is used when connecting via physical USB Type-C. If using an internet connection, replace it with the appropriate IP address assigned by your network.
 
 - Run the example:
 ```shell
