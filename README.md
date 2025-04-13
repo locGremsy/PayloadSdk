@@ -33,6 +33,7 @@ You can set up the environment using either `conda` or `virtualenv`.
 
 ### Using Conda
 ```shell
+cd PayloadSdk/
 conda create -n payloadsdk_env python=3.8
 conda activate payloadsdk_env
 pip install -r requirements.txt
@@ -40,6 +41,7 @@ pip install -r requirements.txt
 
 ### Using Virtualenv
 ```shell
+cd PayloadSdk/
 python3 -m venv payloadsdk_env
 source payloadsdk_env/bin/activate
 pip install -r requirements.txt
@@ -49,7 +51,7 @@ pip install -r requirements.txt
 - Navigate to the cloned directory and install required packages:
 
 ```shell
-cd payloadsdk_python/
+cd PayloadSdk/
 pip3 install -r requirements.txt
 ```
 
@@ -76,5 +78,5 @@ Example:
 
 - Run the example:
 ```shell
-python3 python_example/payload_do_object_detection.py
+python3 python_examples/payload_do_object_detection.py
 ```
