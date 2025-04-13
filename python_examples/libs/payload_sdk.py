@@ -275,8 +275,31 @@ class PayloadSdkInterface:
         self.lib.PayloadSdkInterface_checkPayloadConnection(self.obj)
 
     # Camera methods
-    def setPayloadCameraParam(self, param_id: str, param_value: int, param_type: int):
-        self.lib.PayloadSdkInterface_setPayloadCameraParam(self.obj, param_id.encode('utf-8'), param_value, param_type)
+    def setPayloadCameraParam(self, param_id: str, param_value, param_type):
+        """Set camera parameter for the payload.
+
+        Args:
+            param_id (str): ID of the parameter.
+            param_value: Value of the parameter (integer or Enum).
+            param_type: Type of the parameter (integer or Enum).
+        """
+        # Handle Enum values
+        if hasattr(param_value, 'value'):
+            param_value = param_value.value
+        if hasattr(param_type, 'value'):
+            param_type = param_type.value
+
+        # Convert to ctypes
+        param_value = ctypes.c_uint32(param_value)
+        param_type = ctypes.c_uint8(param_type)
+
+        # Ensure param_id is a string and encode it
+        if not isinstance(param_id, str):
+            param_id = str(param_id)
+        param_id_encoded = param_id.encode('utf-8')
+
+        # Call the C function
+        self.lib.PayloadSdkInterface_setPayloadCameraParam(self.obj, param_id_encoded, param_value, param_type)
 
     def getPayloadCameraSettingList(self):
         self.lib.PayloadSdkInterface_getPayloadCameraSettingList(self.obj)

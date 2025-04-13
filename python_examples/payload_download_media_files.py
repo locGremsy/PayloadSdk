@@ -6,7 +6,7 @@ from typing import List
 href_elements: List[str] = []
 listed = False
 download_directory = ""
-udp_ip_target = "192.168.12.248"
+udp_ip_target = "192.168.55.1"
 
 # encode spaces in URL
 def encode_url_spaces(name: str) -> str:

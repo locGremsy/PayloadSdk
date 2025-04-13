@@ -1,5 +1,5 @@
 # PayloadSdk Python
-This repo is officially SDK for all Gremsy's Payloads using Python
+This repo is officially SDK for all Gremsy's Payloads using Python.
 
 ## Hardware
 - Ubuntu PC (x86_64)
@@ -8,27 +8,44 @@ This repo is officially SDK for all Gremsy's Payloads using Python
 - Qualcomm RB5165
 
 ## Software
-This branch supported:
-- Vio payload: software v2.0.0 or higher
+This branch supports:
+- Vio payload: Software v2.0.0 or higher
 - Zio payload: not supported yet
 - GHardron payload: not supported yet
-- OrusL payload: software v2.0.0 or higher
-- Support Python-version: [3.6, 3.7, 3.8, 3.9]
+- OrusL payload: Software v2.0.0 or higher
+- Supported Python versions: 3.6, 3.7, 3.8, 3.9, 3.11
 
 ## Clone the project 
 ```shell
 git clone --recurse-submodules -b develop ssh://git@gitlab.gremsy.vn:2224/ai/tay-cu/payloadsdk_python.git
 ```
 
+## Setup Environment
+You can set up the environment using either `conda` or `virtualenv`.
+
+### Using Conda
+```shell
+conda create -n payloadsdk_env python=3.8
+conda activate payloadsdk_env
+pip install -r requirements.txt
+```
+
+### Using Virtualenv
+```shell
+python3 -m venv payloadsdk_env
+source payloadsdk_env/bin/activate
+pip install -r requirements.txt
+```
+
 ## How to build and run example
-- Navigate to the cloned directory and install required packages
+- Navigate to the cloned directory and install required packages:
 
 ```shell
 cd payloadsdk_python/
 pip3 install -r requirements.txt
 ```
 
-- Run script file to build the project
+- Run the script file to build the project:
 
 ```bash
 chmod +x cmd_build_payload.sh
@@ -47,7 +64,7 @@ Example:
   ./cmd_build_payload.sh --payload VIO --ip 192.168.55.1 --port 14566
 ```
 
-- Run example
+- Run the example:
 ```shell
-python3 PayloadSdk/python_example/payload_do_object_detection.py
+python3 python_example/payload_do_object_detection.py
 ```

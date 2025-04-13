@@ -10,15 +10,12 @@ from libs.payload_sdk import PayloadSdkInterface, payload_status_event_t, payloa
 from libs.payload_define import *
 from libs.mavlink_define import *
 
+# Global variables
 my_payload = None
 time_to_exit = False
 
-# track status
-track_pos_x = 0.0
-track_pos_y = 0.0
-track_status = 0.0
-track_pos_w = 0.0
-track_pos_h = 0.0
+# Tracking parameters
+track_pos_x = track_pos_y = track_pos_w = track_pos_h = track_status = 0.0
 
 # Signal handler for quitting
 def quit_handler(sig, frame):
